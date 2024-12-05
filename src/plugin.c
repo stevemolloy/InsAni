@@ -11,13 +11,6 @@
 #define TEAM_B_COLOUR BLUE
 #define RECT_HEIGHT 15
 
-// Action action_list[] = {
-//   {.state=WORKING, .as.working=(Working){.where=2, .duration=1.0}},
-//   {.state=MOVING, .as.moving=(Moving){.start_loc=2, .end_loc=4, .duration=0.2}},
-//   {.state=WORKING, .as.working=(Working){.where=4, .duration=1.0}},
-// };
-// size_t num_frames = sizeof(action_list) / sizeof(action_list[0]);
-
 float achr2degrees(int achromat) {
   return 360.0 * ((float)(achromat - 1)) / 20.0;
 }
@@ -43,6 +36,28 @@ Vector2 rot_vect_around_center(Vector2 vect, Vector2 center, float angle) {
   return retval;
 }
 
+float calc_rot(Action action, float *elapsed_time, size_t *frame_number, size_t num_frames) {
+  float rect_rot = 0.0;
+  switch (action.state) {
+    case WORKING:
+      if (*elapsed_time > action.as.working.duration) {
+        *elapsed_time = 0.0;
+        *frame_number = (*frame_number + 1) % num_frames;
+      }
+      rect_rot = achr2degrees(action.as.working.where);
+      break;
+    case MOVING:
+      if (*elapsed_time > action.as.moving.duration) {
+        *elapsed_time = 0.0;
+        *frame_number = (*frame_number + 1) % num_frames;
+      }
+      float total_angular_dist = achr2degrees(action.as.moving.start_loc) - achr2degrees(action.as.moving.end_loc);
+      rect_rot = achr2degrees(action.as.moving.start_loc) - (*elapsed_time / action.as.moving.duration) * total_angular_dist;
+      break;
+  }
+  return rect_rot;
+}
+
 void plug_frame_update(PlugState state) {
   int width = GetScreenWidth();
   int height = GetScreenHeight();
@@ -59,6 +74,7 @@ void plug_frame_update(PlugState state) {
 
   static float rectA_rot = 0.0;
   Action action_A = state.action_list_A[frame_number_A];
+  // rectA_rot = calc_rot(action_A, &elapsed_time_A, &frame_number_A, state.num_frames_A);
   switch (action_A.state) {
     case WORKING:
       if (elapsed_time_A > action_A.as.working.duration) {
