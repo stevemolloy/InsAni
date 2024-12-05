@@ -5,7 +5,7 @@ CLIBS = -Wl,-rpath=./thirdparty/raylib/lib/ -L./thirdparty/raylib/lib/ -l:libray
 
 EXE = main
 
-all: main objs/libplug.so
+all: objs/libplug.so main
 
 $(EXE): src/main.c
 	$(CC) $(CFLAGS) src/main.c -o $(EXE) $(CINCLUDES) $(CLIBS)

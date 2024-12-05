@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "raylib.h"
+#include <string.h>
 
 #include <dlfcn.h>
 #include <sys/stat.h>
@@ -52,6 +53,10 @@ int main(void) {
 
   state.fontsize = 44;
   state.font = LoadFontEx("assets/RecMonoCasual-Regular-1.085.ttf", state.fontsize, NULL, 0);
+  int locs[] = {2, 4, 8, 1};
+  size_t num_locs = sizeof(locs) / sizeof(locs[0]);
+  state.action_list = make_action_list(locs, num_locs);
+  state.num_frames = 2*num_locs;
 
   while (!WindowShouldClose()) {
 #ifndef RELEASE
@@ -71,3 +76,33 @@ int main(void) {
 
   return 0;
 }
+
+Action *make_action_list(int *locations, size_t n) {
+  Action *action_list = malloc((n*2) * sizeof(Action));
+  if (action_list == NULL) {
+    fprintf(stderr, "Memory issues. Quitting\n");
+    exit(1);
+  }
+  memset(action_list, 0, (n*2) * sizeof(Action));
+
+  for (size_t i=0; i<n; i++) {
+    action_list[2*i] = (Action){
+      .state = WORKING,
+      .as.working = (Working){.where = locations[i], .duration=1.0}
+    };
+    if (i != n-1) {
+      action_list[2*i + 1] = (Action){
+        .state = MOVING,
+        .as.moving = (Moving){.start_loc=locations[i], .end_loc=locations[i+1], .duration=0.25}
+      };
+    } else {
+      action_list[2*i + 1] = (Action){
+        .state = MOVING,
+        .as.moving = (Moving){.start_loc=locations[i], .end_loc=locations[0], .duration=0.25}
+      };
+    }
+  }
+
+  return action_list;
+}
+
