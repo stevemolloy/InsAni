@@ -53,10 +53,18 @@ int main(void) {
 
   state.fontsize = 44;
   state.font = LoadFontEx("assets/RecMonoCasual-Regular-1.085.ttf", state.fontsize, NULL, 0);
-  int locs[] = {2, 4, 8, 1};
-  size_t num_locs = sizeof(locs) / sizeof(locs[0]);
-  state.action_list = make_action_list(locs, num_locs);
-  state.num_frames = 2*num_locs;
+
+  int locs_A[] = {1, 2, 3, 4};
+  int durations_A[] = {1, 2, 3, 4};
+  size_t num_locs_A = sizeof(locs_A) / sizeof(locs_A[0]);
+  state.action_list_A = make_action_list(locs_A, durations_A, num_locs_A);
+  state.num_frames_A = 2*num_locs_A;
+
+  int locs_B[] = {4, 3, 2, 1};
+  int durations_B[] = {4, 3, 2, 1};
+  size_t num_locs_B = sizeof(locs_B) / sizeof(locs_B[0]);
+  state.action_list_B = make_action_list(locs_B, durations_B, num_locs_B);
+  state.num_frames_B = 2*num_locs_B;
 
   while (!WindowShouldClose()) {
 #ifndef RELEASE
@@ -77,7 +85,7 @@ int main(void) {
   return 0;
 }
 
-Action *make_action_list(int *locations, size_t n) {
+Action *make_action_list(int *locations, int *durations, size_t n) {
   Action *action_list = malloc((n*2) * sizeof(Action));
   if (action_list == NULL) {
     fprintf(stderr, "Memory issues. Quitting\n");
@@ -88,7 +96,7 @@ Action *make_action_list(int *locations, size_t n) {
   for (size_t i=0; i<n; i++) {
     action_list[2*i] = (Action){
       .state = WORKING,
-      .as.working = (Working){.where = locations[i], .duration=1.0}
+      .as.working = (Working){.where = locations[i], .duration=durations[i] * 1.0}
     };
     if (i != n-1) {
       action_list[2*i + 1] = (Action){

@@ -31,8 +31,10 @@ typedef struct {
 typedef struct {
   int fontsize;
   Font font;
-  Action *action_list;
-  size_t num_frames;
+  Action *action_list_A;
+  size_t num_frames_A;
+  Action *action_list_B;
+  size_t num_frames_B;
 } PlugState;
 
 #ifndef RELEASE
@@ -41,7 +43,7 @@ typedef void (*plug_frame_update_t)(PlugState state);
 void plug_frame_update(PlugState state);
 #endif // !RELEASE
 
-Action *make_action_list(int *locations, size_t n);
+Action *make_action_list(int *locations, int *durations, size_t n);
 
 #endif // !_PLUGIN_H
 
