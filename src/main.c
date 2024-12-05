@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "raylib.h"
@@ -54,10 +55,18 @@ int main(void) {
   state.fontsize = 44;
   state.font = LoadFontEx("assets/RecMonoCasual-Regular-1.085.ttf", state.fontsize, NULL, 0);
 
-  int locs_A[] = {1, 2, 3, 4};
+  int locs_A[] = {2, 4, 6, 8};
+  int locs_B[] = {4, 3, 2, 1};
+  int locs_C[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
   int durations_A[] = {1, 2, 3, 4};
+  int durations_B[] = {4, 3, 2, 1};
+  int durations_C[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
   size_t num_locs_A = sizeof(locs_A) / sizeof(locs_A[0]);
+  size_t num_locs_B = sizeof(locs_B) / sizeof(locs_B[0]);
+  size_t num_locs_C = sizeof(locs_C) / sizeof(locs_C[0]);
   state.job_list_A = make_job_list(locs_A, durations_A, num_locs_A, &state.num_working_days);
+  state.job_list_B = make_job_list(locs_B, durations_B, num_locs_B, &state.num_working_days);
+  state.job_list_C = make_job_list(locs_C, durations_C, num_locs_C, &state.num_working_days);
 
   while (!WindowShouldClose()) {
 #ifndef RELEASE

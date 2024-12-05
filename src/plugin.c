@@ -63,7 +63,7 @@ void plug_frame_update(PlugState state) {
     }
   }
 
-  static float rectA_rot = 0.0;
+  float rectA_rot = 0.0;
   Working job_A = state.job_list_A[frame_number];
 
   switch (global_state) {
@@ -85,6 +85,50 @@ void plug_frame_update(PlugState state) {
     }
   }
 
+  float rectB_rot = 0.0;
+  Working job_B = state.job_list_B[frame_number];
+
+  switch (global_state) {
+    case WORKING: {
+      rectB_rot = achr2degrees(job_B.where);
+      break;
+    }
+    case MOVING: {
+      size_t old_loc = state.job_list_B[frame_number].where;
+      size_t new_loc;
+      if (frame_number == state.num_working_days - 1) {
+        new_loc = state.job_list_B[0].where;
+      } else {
+        new_loc = state.job_list_B[frame_number + 1].where;
+      }
+      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
+      rectB_rot = achr2degrees(old_loc) - (elapsed_time / 0.75) * total_angular_dist;
+      break;
+    }
+  }
+
+  float rectC_rot = 0.0;
+  Working job_C = state.job_list_C[frame_number];
+
+  switch (global_state) {
+    case WORKING: {
+      rectC_rot = achr2degrees(job_C.where);
+      break;
+    }
+    case MOVING: {
+      size_t old_loc = state.job_list_C[frame_number].where;
+      size_t new_loc;
+      if (frame_number == state.num_working_days - 1) {
+        new_loc = state.job_list_C[0].where;
+      } else {
+        new_loc = state.job_list_C[frame_number + 1].where;
+      }
+      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
+      rectC_rot = achr2degrees(old_loc) - (elapsed_time / 0.75) * total_angular_dist;
+      break;
+    }
+  }
+
   float outer_radius = 0.9 * (float)width/2;
 
   Vector2 rectA_origin = {
@@ -97,20 +141,42 @@ void plug_frame_update(PlugState state) {
     .height = RECT_HEIGHT, .width = 80
   };
 
+  Vector2 rectB_origin = {
+    .x = center.x - 40,
+    .y = center.y - (outer_radius - (10 + 1*RECT_HEIGHT))
+  };
+  Vector2 rectB_loc = rot_vect_around_center(rectB_origin, center, rectB_rot);
+  Rectangle teamB_rect = {
+    .x = rectB_loc.x, .y = rectB_loc.y,
+    .height = RECT_HEIGHT, .width = 80
+  };
+
+  Vector2 rectC_origin = {
+    .x = center.x - 40,
+    .y = center.y - (outer_radius - (10 + 2*RECT_HEIGHT))
+  };
+  Vector2 rectC_loc = rot_vect_around_center(rectC_origin, center, rectC_rot);
+  Rectangle teamC_rect = {
+    .x = rectC_loc.x, .y = rectC_loc.y,
+    .height = RECT_HEIGHT, .width = 80
+  };
+
   BeginDrawing();
 
   ClearBackground(BACKGROUND_COLOUR);
 
   if (global_state == WORKING) {
-    DrawText("WORKING", 0, 0, state.fontsize, RAYWHITE);
+    DrawText("WORKING", 2, 2, state.fontsize, RAYWHITE);
   } else if (global_state == MOVING) {
-    DrawText("MOVING", 0, 0, state.fontsize, RAYWHITE);
+    DrawText("MOVING", 2, 2, state.fontsize, RAYWHITE);
   }
 
   DrawPoly(center, 20, outer_radius, 9.0, RAYWHITE);
   DrawPoly(center, 20, outer_radius - 5*RECT_HEIGHT - 10, 9.0, BACKGROUND_COLOUR);
 
   DrawRectanglePro(teamA_rect, (Vector2){0}, rectA_rot, TEAM_A_COLOUR);
+  DrawRectanglePro(teamB_rect, (Vector2){0}, rectB_rot, TEAM_B_COLOUR);
+  DrawRectanglePro(teamC_rect, (Vector2){0}, rectC_rot, TEAM_C_COLOUR);
 
   EndDrawing();
 }
