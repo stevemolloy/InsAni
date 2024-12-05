@@ -8,9 +8,9 @@
 
 #include "plugin.h"
 
-#define WIDTH 800
-#define HEIGHT 600
-#define FPS 10
+#define WIDTH 1000
+#define HEIGHT 1000
+#define FPS 60
 
 PlugState state = {0};
 
