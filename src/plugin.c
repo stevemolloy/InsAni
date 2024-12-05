@@ -9,6 +9,7 @@
 #define BACKGROUND_COLOUR (Color){0x28, 0x28, 0x28, 0xFF}
 #define TEAM_A_COLOUR RED
 #define TEAM_B_COLOUR BLUE
+#define TEAM_C_COLOUR GREEN
 #define RECT_HEIGHT 15
 
 float achr2degrees(int achromat) {
@@ -36,85 +37,52 @@ Vector2 rot_vect_around_center(Vector2 vect, Vector2 center, float angle) {
   return retval;
 }
 
-float calc_rot(Action action, float *elapsed_time, size_t *frame_number, size_t num_frames) {
-  float rect_rot = 0.0;
-  switch (action.state) {
-    case WORKING:
-      if (*elapsed_time > action.as.working.duration) {
-        *elapsed_time = 0.0;
-        *frame_number = (*frame_number + 1) % num_frames;
-      }
-      rect_rot = achr2degrees(action.as.working.where);
-      break;
-    case MOVING:
-      if (*elapsed_time > action.as.moving.duration) {
-        *elapsed_time = 0.0;
-        *frame_number = (*frame_number + 1) % num_frames;
-      }
-      float total_angular_dist = achr2degrees(action.as.moving.start_loc) - achr2degrees(action.as.moving.end_loc);
-      rect_rot = achr2degrees(action.as.moving.start_loc) - (*elapsed_time / action.as.moving.duration) * total_angular_dist;
-      break;
-  }
-  return rect_rot;
-}
-
 void plug_frame_update(PlugState state) {
   int width = GetScreenWidth();
   int height = GetScreenHeight();
   Vector2 center = (Vector2) { .x = (float)width/2, .y = (float)height/2 };
 
-  static size_t frame_number_A = 0;
-  static float elapsed_time_A = 0.0;
-  static size_t frame_number_B = 0;
-  static float elapsed_time_B = 0.0;
+  static float elapsed_time = 0.0;
+  static State global_state = WORKING;
+
+  static size_t frame_number = 0;
 
   float dt = GetFrameTime();
-  elapsed_time_A += dt;
-  elapsed_time_B += dt;
+  elapsed_time += dt;
 
-  static float rectA_rot = 0.0;
-  Action action_A = state.action_list_A[frame_number_A];
-  // rectA_rot = calc_rot(action_A, &elapsed_time_A, &frame_number_A, state.num_frames_A);
-  switch (action_A.state) {
-    case WORKING:
-      if (elapsed_time_A > action_A.as.working.duration) {
-        elapsed_time_A = 0.0;
-        frame_number_A = (frame_number_A + 1) % state.num_frames_A;
-      } else {
-        rectA_rot = achr2degrees(action_A.as.working.where);
-      }
-      break;
-    case MOVING:
-      if (elapsed_time_A > action_A.as.moving.duration) {
-        elapsed_time_A = 0.0;
-        frame_number_A = (frame_number_A + 1) % state.num_frames_A;
-      } else {
-        float total_angular_dist = achr2degrees(action_A.as.moving.start_loc) - achr2degrees(action_A.as.moving.end_loc);
-        rectA_rot = achr2degrees(action_A.as.moving.start_loc) - (elapsed_time_A / action_A.as.moving.duration) * total_angular_dist;
-      }
-      break;
+  if (global_state == WORKING) {
+    if (elapsed_time > 1.5) {
+      elapsed_time = 0.0;
+      global_state = MOVING;
+    }
+  } else if (global_state == MOVING) {
+    if (elapsed_time > 0.75) {
+      elapsed_time = 0.0;
+      global_state = WORKING;
+      frame_number = (frame_number + 1) % state.num_working_days;
+    }
   }
 
-  static float rectB_rot = 0.0;
-  Action action_B = state.action_list_B[frame_number_B];
-  switch (action_B.state) {
-    case WORKING:
-      if (elapsed_time_B > action_B.as.working.duration) {
-        elapsed_time_B = 0.0;
-        frame_number_B = (frame_number_B + 1) % state.num_frames_B;
-      } else {
-        rectB_rot = achr2degrees(action_B.as.working.where);
-      }
+  static float rectA_rot = 0.0;
+  Working job_A = state.job_list_A[frame_number];
+
+  switch (global_state) {
+    case WORKING: {
+      rectA_rot = achr2degrees(job_A.where);
       break;
-    case MOVING:
-      if (elapsed_time_B > action_B.as.moving.duration) {
-        elapsed_time_B = 0.0;
-        frame_number_B = (frame_number_B + 1) % state.num_frames_B;
+    }
+    case MOVING: {
+      size_t old_loc = state.job_list_A[frame_number].where;
+      size_t new_loc;
+      if (frame_number == state.num_working_days - 1) {
+        new_loc = state.job_list_A[0].where;
       } else {
-        float total_angular_dist = achr2degrees(action_B.as.moving.start_loc) - achr2degrees(action_B.as.moving.end_loc);
-        rectB_rot = achr2degrees(action_B.as.moving.start_loc) - (elapsed_time_B / action_B.as.moving.duration) * total_angular_dist;
+        new_loc = state.job_list_A[frame_number + 1].where;
       }
+      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
+      rectA_rot = achr2degrees(old_loc) - (elapsed_time / 0.75) * total_angular_dist;
       break;
+    }
   }
 
   float outer_radius = 0.9 * (float)width/2;
@@ -129,25 +97,20 @@ void plug_frame_update(PlugState state) {
     .height = RECT_HEIGHT, .width = 80
   };
 
-  Vector2 rectB_origin = {
-    .x = center.x - 40,
-    .y = center.y - (outer_radius - (10 + 1*RECT_HEIGHT))
-  };
-  Vector2 rectB_loc = rot_vect_around_center(rectB_origin, center, rectB_rot);
-  Rectangle teamB_rect = {
-    .x = rectB_loc.x, .y = rectB_loc.y,
-    .height = RECT_HEIGHT, .width = 80
-  };
-
   BeginDrawing();
 
   ClearBackground(BACKGROUND_COLOUR);
+
+  if (global_state == WORKING) {
+    DrawText("WORKING", 0, 0, state.fontsize, RAYWHITE);
+  } else if (global_state == MOVING) {
+    DrawText("MOVING", 0, 0, state.fontsize, RAYWHITE);
+  }
 
   DrawPoly(center, 20, outer_radius, 9.0, RAYWHITE);
   DrawPoly(center, 20, outer_radius - 5*RECT_HEIGHT - 10, 9.0, BACKGROUND_COLOUR);
 
   DrawRectanglePro(teamA_rect, (Vector2){0}, rectA_rot, TEAM_A_COLOUR);
-  DrawRectanglePro(teamB_rect, (Vector2){0}, rectB_rot, TEAM_B_COLOUR);
 
   EndDrawing();
 }

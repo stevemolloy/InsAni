@@ -57,14 +57,7 @@ int main(void) {
   int locs_A[] = {1, 2, 3, 4};
   int durations_A[] = {1, 2, 3, 4};
   size_t num_locs_A = sizeof(locs_A) / sizeof(locs_A[0]);
-  state.action_list_A = make_action_list(locs_A, durations_A, num_locs_A);
-  state.num_frames_A = 2*num_locs_A;
-
-  int locs_B[] = {4, 3, 2, 1};
-  int durations_B[] = {4, 3, 2, 1};
-  size_t num_locs_B = sizeof(locs_B) / sizeof(locs_B[0]);
-  state.action_list_B = make_action_list(locs_B, durations_B, num_locs_B);
-  state.num_frames_B = 2*num_locs_B;
+  state.job_list_A = make_job_list(locs_A, durations_A, num_locs_A, &state.num_working_days);
 
   while (!WindowShouldClose()) {
 #ifndef RELEASE
@@ -85,32 +78,31 @@ int main(void) {
   return 0;
 }
 
-Action *make_action_list(int *locations, int *durations, size_t n) {
-  Action *action_list = malloc((n*2) * sizeof(Action));
-  if (action_list == NULL) {
+Working *make_job_list(int *locations, int *durations, size_t n, size_t *working_days) {
+  *working_days = 0;
+  for (size_t i=0; i<n; i++) {
+    *working_days += durations[i];
+  }
+
+  Working *job_list = malloc(*working_days * sizeof(Working));
+  if (job_list == NULL) {
     fprintf(stderr, "Memory issues. Quitting\n");
     exit(1);
   }
-  memset(action_list, 0, (n*2) * sizeof(Action));
+  memset(job_list, 0, *working_days * sizeof(Working));
 
+  size_t counter = 0;
   for (size_t i=0; i<n; i++) {
-    action_list[2*i] = (Action){
-      .state = WORKING,
-      .as.working = (Working){.where = locations[i], .duration=durations[i] * 1.0}
-    };
-    if (i != n-1) {
-      action_list[2*i + 1] = (Action){
-        .state = MOVING,
-        .as.moving = (Moving){.start_loc=locations[i], .end_loc=locations[i+1], .duration=0.25}
+    while (durations[i] > 0) {
+      job_list[counter] = (Working){
+        .where = locations[i],
+        .duration=1,
       };
-    } else {
-      action_list[2*i + 1] = (Action){
-        .state = MOVING,
-        .as.moving = (Moving){.start_loc=locations[i], .end_loc=locations[0], .duration=0.25}
-      };
+      durations[i]--;
+      counter++;
     }
   }
 
-  return action_list;
+  return job_list;
 }
 
