@@ -2,6 +2,12 @@
 
 #include "insani_lib.h"
 
+char *state_as_string(State state) {
+  if (state == WORKING) return "WORKING";
+  if (state == MOVING)  return "MOVING";
+  return NULL;
+}
+
 float lerpf(float a, float b, float t) {
   return a + (b - a) * t;
 }

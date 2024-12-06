@@ -10,9 +10,9 @@
 
 #include "plugin.h"
 
-#define WIDTH 1000
-#define HEIGHT 1000
-#define FPS 60
+#define WIDTH 1200
+#define HEIGHT 900
+#define FPS 120
 
 PlugState state = {0};
 
@@ -50,6 +50,8 @@ int sum_intarray(int *array, size_t n) {
   return sum;
 }
 
+#define ARRAY_SIZE(arr) sizeof((arr)) / sizeof((arr)[0])
+
 int main(void) {
 #ifndef RELEASE
   struct stat file_stats = {0};
@@ -73,20 +75,15 @@ int main(void) {
   int durations_C[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
   int durations_D[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
   int durations_E[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-  assert(sum_intarray(durations_A, sizeof(durations_A)/sizeof(durations_A[0])) == sum_intarray(durations_B, sizeof(durations_B)/sizeof(durations_B[0])));
-  assert(sum_intarray(durations_A, sizeof(durations_A)/sizeof(durations_A[0])) == sum_intarray(durations_C, sizeof(durations_C)/sizeof(durations_C[0])));
-  assert(sum_intarray(durations_A, sizeof(durations_A)/sizeof(durations_A[0])) == sum_intarray(durations_D, sizeof(durations_D)/sizeof(durations_D[0])));
-  assert(sum_intarray(durations_A, sizeof(durations_A)/sizeof(durations_A[0])) == sum_intarray(durations_E, sizeof(durations_E)/sizeof(durations_E[0])));
-  size_t num_locs_A = sizeof(locs_A) / sizeof(locs_A[0]);
-  size_t num_locs_B = sizeof(locs_B) / sizeof(locs_B[0]);
-  size_t num_locs_C = sizeof(locs_C) / sizeof(locs_C[0]);
-  size_t num_locs_D = sizeof(locs_D) / sizeof(locs_D[0]);
-  size_t num_locs_E = sizeof(locs_E) / sizeof(locs_E[0]);
-  state.job_list_A = make_job_list(locs_A, durations_A, num_locs_A, &state.num_working_days);
-  state.job_list_B = make_job_list(locs_B, durations_B, num_locs_B, &state.num_working_days);
-  state.job_list_C = make_job_list(locs_C, durations_C, num_locs_C, &state.num_working_days);
-  state.job_list_D = make_job_list(locs_D, durations_D, num_locs_D, &state.num_working_days);
-  state.job_list_E = make_job_list(locs_E, durations_E, num_locs_E, &state.num_working_days);
+  assert(sum_intarray(durations_A, ARRAY_SIZE(durations_A)) == sum_intarray(durations_B, ARRAY_SIZE(durations_B)));
+  assert(sum_intarray(durations_A, ARRAY_SIZE(durations_A)) == sum_intarray(durations_C, ARRAY_SIZE(durations_C)));
+  assert(sum_intarray(durations_A, ARRAY_SIZE(durations_A)) == sum_intarray(durations_D, ARRAY_SIZE(durations_D)));
+  assert(sum_intarray(durations_A, ARRAY_SIZE(durations_A)) == sum_intarray(durations_E, ARRAY_SIZE(durations_E)));
+  state.job_list_A = make_job_list(locs_A, durations_A, ARRAY_SIZE(locs_A), &state.num_working_days);
+  state.job_list_B = make_job_list(locs_B, durations_B, ARRAY_SIZE(locs_B), &state.num_working_days);
+  state.job_list_C = make_job_list(locs_C, durations_C, ARRAY_SIZE(locs_C), &state.num_working_days);
+  state.job_list_D = make_job_list(locs_D, durations_D, ARRAY_SIZE(locs_D), &state.num_working_days);
+  state.job_list_E = make_job_list(locs_E, durations_E, ARRAY_SIZE(locs_E), &state.num_working_days);
 
   while (!WindowShouldClose()) {
 #ifndef RELEASE
@@ -104,14 +101,17 @@ int main(void) {
 
   CloseWindow();
 
+  free(state.job_list_A);
+  free(state.job_list_B);
+  free(state.job_list_C);
+  free(state.job_list_D);
+  free(state.job_list_E);
+
   return 0;
 }
 
 Working *make_job_list(int *locations, int *durations, size_t n, size_t *working_days) {
-  *working_days = 0;
-  for (size_t i=0; i<n; i++) {
-    *working_days += durations[i];
-  }
+  *working_days = sum_intarray(durations, n);
 
   Working *job_list = malloc(*working_days * sizeof(Working));
   if (job_list == NULL) {
@@ -123,10 +123,7 @@ Working *make_job_list(int *locations, int *durations, size_t n, size_t *working
   size_t counter = 0;
   for (size_t i=0; i<n; i++) {
     while (durations[i] > 0) {
-      job_list[counter] = (Working){
-        .where = locations[i],
-        .duration=1,
-      };
+      job_list[counter] = (Working){.where = locations[i], .duration=1};
       durations[i]--;
       counter++;
     }

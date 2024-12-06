@@ -13,15 +13,15 @@
 #define TEAM_D_COLOUR BLACK
 #define TEAM_E_COLOUR PURPLE
 #define RECT_HEIGHT 15
-#define RECT_WIDTH 80
-
+#define RECT_WIDTH 90
+#define NUM_OF_ACHROS 20
 #define WORKING_TIME 1.0
 #define MOVING_TIME 0.5
 
 void plug_frame_update(PlugState state) {
-  int width = GetScreenWidth();
+  // int width = GetScreenWidth();
   int height = GetScreenHeight();
-  Vector2 center = (Vector2) { .x = (float)width/2, .y = (float)height/2 };
+  Vector2 center = {.x = height/2.0, .y = height/2.0};
 
   static float elapsed_time = 0.0;
   static State global_state = WORKING;
@@ -44,7 +44,7 @@ void plug_frame_update(PlugState state) {
     }
   }
 
-  float rectA_rot = 0.0, rectB_rot = 0.0, rectC_rot = 0.0, rectD_rot = 0.0, rectE_rot = 0.0;
+  float rectA_rot, rectB_rot, rectC_rot, rectD_rot, rectE_rot;
 
   switch (global_state) {
     case WORKING: {
@@ -67,55 +67,30 @@ void plug_frame_update(PlugState state) {
     }
   }
 
-  float outer_radius = 0.9 * (float)width/2;
+  float outer_radius = 0.9 * height/2.0;
 
-  Vector2 rectA_origin = {
-    .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - outer_radius + 10 + 0*RECT_HEIGHT
-  };
-  Vector2 rectA_loc = rot_vect_around_center(rectA_origin, center, rectA_rot);
+  Vector2 rect_loc = {.x=center.x - RECT_WIDTH/2.0, .y=center.y - outer_radius + 10};
+
+  Vector2 rectA_loc = rot_vect_around_center((Vector2){.x = rect_loc.x, .y = rect_loc.y + 0*RECT_HEIGHT}, center, rectA_rot);
+  Vector2 rectB_loc = rot_vect_around_center((Vector2){.x = rect_loc.x, .y = rect_loc.y + 1*RECT_HEIGHT}, center, rectB_rot);
+  Vector2 rectC_loc = rot_vect_around_center((Vector2){.x = rect_loc.x, .y = rect_loc.y + 2*RECT_HEIGHT}, center, rectC_rot);
+  Vector2 rectD_loc = rot_vect_around_center((Vector2){.x = rect_loc.x, .y = rect_loc.y + 3*RECT_HEIGHT}, center, rectD_rot);
+  Vector2 rectE_loc = rot_vect_around_center((Vector2){.x = rect_loc.x, .y = rect_loc.y + 4*RECT_HEIGHT}, center, rectE_rot);
+
   Rectangle teamA_rect = {.x = rectA_loc.x, .y = rectA_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
-
-  Vector2 rectB_origin = {
-    .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - outer_radius + 10 + 1*RECT_HEIGHT
-  };
-  Vector2 rectB_loc = rot_vect_around_center(rectB_origin, center, rectB_rot);
   Rectangle teamB_rect = {.x = rectB_loc.x, .y = rectB_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
-
-  Vector2 rectC_origin = {
-    .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - outer_radius + 10 + 2*RECT_HEIGHT
-  };
-  Vector2 rectC_loc = rot_vect_around_center(rectC_origin, center, rectC_rot);
   Rectangle teamC_rect = {.x = rectC_loc.x, .y = rectC_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
-
-  Vector2 rectD_origin = {
-    .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - outer_radius + 10 + 3*RECT_HEIGHT
-  };
-  Vector2 rectD_loc = rot_vect_around_center(rectD_origin, center, rectD_rot);
   Rectangle teamD_rect = {.x = rectD_loc.x, .y = rectD_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
-
-  Vector2 rectE_origin = {
-    .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - outer_radius + 10 + 4*RECT_HEIGHT
-  };
-  Vector2 rectE_loc = rot_vect_around_center(rectE_origin, center, rectE_rot);
   Rectangle teamE_rect = {.x = rectE_loc.x, .y = rectE_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
 
   BeginDrawing();
 
   ClearBackground(BACKGROUND_COLOUR);
 
-  if (global_state == WORKING) {
-    DrawTextEx(state.font, "WORKING", (Vector2){.x=2, .y=2}, state.fontsize, 0.0, RAYWHITE);
-  } else if (global_state == MOVING) {
-    DrawTextEx(state.font, "MOVING", (Vector2){.x=2, .y=2}, state.fontsize, 0.0, RAYWHITE);
-  }
+  DrawTextEx(state.font, state_as_string(global_state), (Vector2){.x=2, .y=2}, state.fontsize, 0.0, RAYWHITE);
 
-  DrawPoly(center, 20, outer_radius, 9.0, RAYWHITE);
-  DrawPoly(center, 20, outer_radius - 5*RECT_HEIGHT - 10, 9.0, BACKGROUND_COLOUR);
+  DrawPoly(center, NUM_OF_ACHROS, outer_radius, 9.0, RAYWHITE);
+  DrawPoly(center, NUM_OF_ACHROS, outer_radius - 5*RECT_HEIGHT - 10, 9.0, BACKGROUND_COLOUR);
 
   DrawRectanglePro(teamA_rect, (Vector2){0}, rectA_rot, TEAM_A_COLOUR);
   DrawRectanglePro(teamB_rect, (Vector2){0}, rectB_rot, TEAM_B_COLOUR);
