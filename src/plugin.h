@@ -21,6 +21,8 @@ typedef struct {
   Working *job_list_A;
   Working *job_list_B;
   Working *job_list_C;
+  Working *job_list_D;
+  Working *job_list_E;
 } PlugState;
 
 #ifndef RELEASE

@@ -10,7 +10,12 @@
 #define TEAM_A_COLOUR RED
 #define TEAM_B_COLOUR BLUE
 #define TEAM_C_COLOUR GREEN
+#define TEAM_D_COLOUR BLACK
+#define TEAM_E_COLOUR PURPLE
 #define RECT_HEIGHT 15
+
+#define WORKING_TIME 1.0
+#define MOVING_TIME 0.5
 
 float achr2degrees(int achromat) {
   return 360.0 * ((float)(achromat - 1)) / 20.0;
@@ -51,12 +56,12 @@ void plug_frame_update(PlugState state) {
   elapsed_time += dt;
 
   if (global_state == WORKING) {
-    if (elapsed_time > 1.5) {
+    if (elapsed_time > WORKING_TIME) {
       elapsed_time = 0.0;
       global_state = MOVING;
     }
   } else if (global_state == MOVING) {
-    if (elapsed_time > 0.75) {
+    if (elapsed_time > MOVING_TIME) {
       elapsed_time = 0.0;
       global_state = WORKING;
       frame_number = (frame_number + 1) % state.num_working_days;
@@ -80,7 +85,7 @@ void plug_frame_update(PlugState state) {
         new_loc = state.job_list_A[frame_number + 1].where;
       }
       float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
-      rectA_rot = achr2degrees(old_loc) - (elapsed_time / 0.75) * total_angular_dist;
+      rectA_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
       break;
     }
   }
@@ -102,7 +107,7 @@ void plug_frame_update(PlugState state) {
         new_loc = state.job_list_B[frame_number + 1].where;
       }
       float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
-      rectB_rot = achr2degrees(old_loc) - (elapsed_time / 0.75) * total_angular_dist;
+      rectB_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
       break;
     }
   }
@@ -124,7 +129,51 @@ void plug_frame_update(PlugState state) {
         new_loc = state.job_list_C[frame_number + 1].where;
       }
       float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
-      rectC_rot = achr2degrees(old_loc) - (elapsed_time / 0.75) * total_angular_dist;
+      rectC_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
+      break;
+    }
+  }
+
+  float rectD_rot = 0.0;
+  Working job_D = state.job_list_D[frame_number];
+
+  switch (global_state) {
+    case WORKING: {
+      rectD_rot = achr2degrees(job_D.where);
+      break;
+    }
+    case MOVING: {
+      size_t old_loc = state.job_list_D[frame_number].where;
+      size_t new_loc;
+      if (frame_number == state.num_working_days - 1) {
+        new_loc = state.job_list_D[0].where;
+      } else {
+        new_loc = state.job_list_D[frame_number + 1].where;
+      }
+      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
+      rectD_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
+      break;
+    }
+  }
+
+  float rectE_rot = 0.0;
+  Working job_E = state.job_list_E[frame_number];
+
+  switch (global_state) {
+    case WORKING: {
+      rectE_rot = achr2degrees(job_E.where);
+      break;
+    }
+    case MOVING: {
+      size_t old_loc = state.job_list_E[frame_number].where;
+      size_t new_loc;
+      if (frame_number == state.num_working_days - 1) {
+        new_loc = state.job_list_E[0].where;
+      } else {
+        new_loc = state.job_list_E[frame_number + 1].where;
+      }
+      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
+      rectE_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
       break;
     }
   }
@@ -161,6 +210,26 @@ void plug_frame_update(PlugState state) {
     .height = RECT_HEIGHT, .width = 80
   };
 
+  Vector2 rectD_origin = {
+    .x = center.x - 40,
+    .y = center.y - (outer_radius - (10 + 3*RECT_HEIGHT))
+  };
+  Vector2 rectD_loc = rot_vect_around_center(rectD_origin, center, rectD_rot);
+  Rectangle teamD_rect = {
+    .x = rectD_loc.x, .y = rectD_loc.y,
+    .height = RECT_HEIGHT, .width = 80
+  };
+
+  Vector2 rectE_origin = {
+    .x = center.x - 40,
+    .y = center.y - (outer_radius - (10 + 4*RECT_HEIGHT))
+  };
+  Vector2 rectE_loc = rot_vect_around_center(rectE_origin, center, rectE_rot);
+  Rectangle teamE_rect = {
+    .x = rectE_loc.x, .y = rectE_loc.y,
+    .height = RECT_HEIGHT, .width = 80
+  };
+
   BeginDrawing();
 
   ClearBackground(BACKGROUND_COLOUR);
@@ -177,6 +246,8 @@ void plug_frame_update(PlugState state) {
   DrawRectanglePro(teamA_rect, (Vector2){0}, rectA_rot, TEAM_A_COLOUR);
   DrawRectanglePro(teamB_rect, (Vector2){0}, rectB_rot, TEAM_B_COLOUR);
   DrawRectanglePro(teamC_rect, (Vector2){0}, rectC_rot, TEAM_C_COLOUR);
+  DrawRectanglePro(teamD_rect, (Vector2){0}, rectD_rot, TEAM_D_COLOUR);
+  DrawRectanglePro(teamE_rect, (Vector2){0}, rectE_rot, TEAM_E_COLOUR);
 
   EndDrawing();
 }
