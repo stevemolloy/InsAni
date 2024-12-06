@@ -74,50 +74,35 @@ void plug_frame_update(PlugState state) {
     .y = center.y - outer_radius + 10 + 0*RECT_HEIGHT
   };
   Vector2 rectA_loc = rot_vect_around_center(rectA_origin, center, rectA_rot);
-  Rectangle teamA_rect = {
-    .x = rectA_loc.x, .y = rectA_loc.y,
-    .height = RECT_HEIGHT, .width = RECT_WIDTH
-  };
+  Rectangle teamA_rect = {.x = rectA_loc.x, .y = rectA_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
 
   Vector2 rectB_origin = {
     .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - (outer_radius - (10 + 1*RECT_HEIGHT))
+    .y = center.y - outer_radius + 10 + 1*RECT_HEIGHT
   };
   Vector2 rectB_loc = rot_vect_around_center(rectB_origin, center, rectB_rot);
-  Rectangle teamB_rect = {
-    .x = rectB_loc.x, .y = rectB_loc.y,
-    .height = RECT_HEIGHT, .width = RECT_WIDTH
-  };
+  Rectangle teamB_rect = {.x = rectB_loc.x, .y = rectB_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
 
   Vector2 rectC_origin = {
     .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - (outer_radius - (10 + 2*RECT_HEIGHT))
+    .y = center.y - outer_radius + 10 + 2*RECT_HEIGHT
   };
   Vector2 rectC_loc = rot_vect_around_center(rectC_origin, center, rectC_rot);
-  Rectangle teamC_rect = {
-    .x = rectC_loc.x, .y = rectC_loc.y,
-    .height = RECT_HEIGHT, .width = RECT_WIDTH
-  };
+  Rectangle teamC_rect = {.x = rectC_loc.x, .y = rectC_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
 
   Vector2 rectD_origin = {
     .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - (outer_radius - (10 + 3*RECT_HEIGHT))
+    .y = center.y - outer_radius + 10 + 3*RECT_HEIGHT
   };
   Vector2 rectD_loc = rot_vect_around_center(rectD_origin, center, rectD_rot);
-  Rectangle teamD_rect = {
-    .x = rectD_loc.x, .y = rectD_loc.y,
-    .height = RECT_HEIGHT, .width = RECT_WIDTH
-  };
+  Rectangle teamD_rect = {.x = rectD_loc.x, .y = rectD_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
 
   Vector2 rectE_origin = {
     .x = center.x - RECT_WIDTH/2.0,
-    .y = center.y - (outer_radius - (10 + 4*RECT_HEIGHT))
+    .y = center.y - outer_radius + 10 + 4*RECT_HEIGHT
   };
   Vector2 rectE_loc = rot_vect_around_center(rectE_origin, center, rectE_rot);
-  Rectangle teamE_rect = {
-    .x = rectE_loc.x, .y = rectE_loc.y,
-    .height = RECT_HEIGHT, .width = RECT_WIDTH
-  };
+  Rectangle teamE_rect = {.x = rectE_loc.x, .y = rectE_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
 
   BeginDrawing();
 
