@@ -24,31 +24,20 @@ void plug_frame_update(PlugState state) {
   int height = GetScreenHeight();
   Vector2 center = {.x = height/2.0, .y = height/2.0};
 
+  static size_t frame_number = 0;
   static float elapsed_time = 0.0;
   static State global_state = WORKING;
 
-  static size_t frame_number = 0;
-
-  float dt = GetFrameTime();
-  elapsed_time += dt;
-
-  if (global_state == WORKING) {
-    if (elapsed_time > WORKING_TIME) {
-      elapsed_time = 0.0;
-      global_state = MOVING;
-    }
-  } else if (global_state == MOVING) {
-    if (elapsed_time > MOVING_TIME) {
-      elapsed_time = 0.0;
-      global_state = WORKING;
-      frame_number = (frame_number + 1) % state.num_working_days;
-    }
-  }
+  elapsed_time += GetFrameTime();
 
   float rectA_rot, rectB_rot, rectC_rot, rectD_rot, rectE_rot;
 
   switch (global_state) {
     case WORKING: {
+      if (elapsed_time > WORKING_TIME) {
+        elapsed_time = 0.0;
+        global_state = MOVING;
+      }
       rectA_rot = achr2degrees(state.job_list_A[frame_number].where);
       rectB_rot = achr2degrees(state.job_list_B[frame_number].where);
       rectC_rot = achr2degrees(state.job_list_C[frame_number].where);
@@ -57,6 +46,11 @@ void plug_frame_update(PlugState state) {
       break;
     }
     case MOVING: {
+      if (elapsed_time > MOVING_TIME) {
+        elapsed_time = 0.0;
+        global_state = WORKING;
+        frame_number = (frame_number + 1) % state.num_working_days;
+      }
       size_t next_frame = (frame_number + 1) % state.num_working_days;
       float t = elapsed_time / MOVING_TIME;
       rectA_rot = lerpf(achr2degrees(state.job_list_A[frame_number].where), achr2degrees(state.job_list_A[next_frame].where), t);
