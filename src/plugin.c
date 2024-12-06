@@ -17,6 +17,10 @@
 #define WORKING_TIME 1.0
 #define MOVING_TIME 0.5
 
+float lerpf(float a, float b, float t) {
+  return a + (b - a) * t;
+}
+
 float achr2degrees(int achromat) {
   return 360.0 * ((float)(achromat - 1)) / 20.0;
 }
@@ -68,112 +72,43 @@ void plug_frame_update(PlugState state) {
     }
   }
 
-  float rectA_rot = 0.0;
-  Working job_A = state.job_list_A[frame_number];
+  float rectA_rot = 0.0, rectB_rot = 0.0, rectC_rot = 0.0, rectD_rot = 0.0, rectE_rot = 0.0;
 
   switch (global_state) {
     case WORKING: {
-      rectA_rot = achr2degrees(job_A.where);
+      rectA_rot = achr2degrees(state.job_list_A[frame_number].where);
+      rectB_rot = achr2degrees(state.job_list_B[frame_number].where);
+      rectC_rot = achr2degrees(state.job_list_C[frame_number].where);
+      rectD_rot = achr2degrees(state.job_list_D[frame_number].where);
+      rectE_rot = achr2degrees(state.job_list_E[frame_number].where);
       break;
     }
     case MOVING: {
-      size_t old_loc = state.job_list_A[frame_number].where;
-      size_t new_loc;
-      if (frame_number == state.num_working_days - 1) {
-        new_loc = state.job_list_A[0].where;
-      } else {
-        new_loc = state.job_list_A[frame_number + 1].where;
-      }
-      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
-      rectA_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
-      break;
-    }
-  }
-
-  float rectB_rot = 0.0;
-  Working job_B = state.job_list_B[frame_number];
-
-  switch (global_state) {
-    case WORKING: {
-      rectB_rot = achr2degrees(job_B.where);
-      break;
-    }
-    case MOVING: {
-      size_t old_loc = state.job_list_B[frame_number].where;
-      size_t new_loc;
-      if (frame_number == state.num_working_days - 1) {
-        new_loc = state.job_list_B[0].where;
-      } else {
-        new_loc = state.job_list_B[frame_number + 1].where;
-      }
-      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
-      rectB_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
-      break;
-    }
-  }
-
-  float rectC_rot = 0.0;
-  Working job_C = state.job_list_C[frame_number];
-
-  switch (global_state) {
-    case WORKING: {
-      rectC_rot = achr2degrees(job_C.where);
-      break;
-    }
-    case MOVING: {
-      size_t old_loc = state.job_list_C[frame_number].where;
-      size_t new_loc;
-      if (frame_number == state.num_working_days - 1) {
-        new_loc = state.job_list_C[0].where;
-      } else {
-        new_loc = state.job_list_C[frame_number + 1].where;
-      }
-      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
-      rectC_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
-      break;
-    }
-  }
-
-  float rectD_rot = 0.0;
-  Working job_D = state.job_list_D[frame_number];
-
-  switch (global_state) {
-    case WORKING: {
-      rectD_rot = achr2degrees(job_D.where);
-      break;
-    }
-    case MOVING: {
-      size_t old_loc = state.job_list_D[frame_number].where;
-      size_t new_loc;
-      if (frame_number == state.num_working_days - 1) {
-        new_loc = state.job_list_D[0].where;
-      } else {
-        new_loc = state.job_list_D[frame_number + 1].where;
-      }
-      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
-      rectD_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
-      break;
-    }
-  }
-
-  float rectE_rot = 0.0;
-  Working job_E = state.job_list_E[frame_number];
-
-  switch (global_state) {
-    case WORKING: {
-      rectE_rot = achr2degrees(job_E.where);
-      break;
-    }
-    case MOVING: {
-      size_t old_loc = state.job_list_E[frame_number].where;
-      size_t new_loc;
-      if (frame_number == state.num_working_days - 1) {
-        new_loc = state.job_list_E[0].where;
-      } else {
-        new_loc = state.job_list_E[frame_number + 1].where;
-      }
-      float total_angular_dist = achr2degrees(old_loc) - achr2degrees(new_loc);
-      rectE_rot = achr2degrees(old_loc) - (elapsed_time / MOVING_TIME) * total_angular_dist;
+      rectA_rot = lerpf(
+        achr2degrees(state.job_list_A[frame_number].where),
+        achr2degrees(state.job_list_A[(frame_number + 1) % state.num_working_days].where),
+        elapsed_time / MOVING_TIME
+      );
+      rectB_rot = lerpf(
+        achr2degrees(state.job_list_B[frame_number].where),
+        achr2degrees(state.job_list_B[(frame_number + 1) % state.num_working_days].where),
+        elapsed_time / MOVING_TIME
+      );
+      rectC_rot = lerpf(
+        achr2degrees(state.job_list_C[frame_number].where),
+        achr2degrees(state.job_list_C[(frame_number + 1) % state.num_working_days].where),
+        elapsed_time / MOVING_TIME
+      );
+      rectD_rot = lerpf(
+        achr2degrees(state.job_list_D[frame_number].where),
+        achr2degrees(state.job_list_D[(frame_number + 1) % state.num_working_days].where),
+        elapsed_time / MOVING_TIME
+      );
+      rectE_rot = lerpf(
+        achr2degrees(state.job_list_E[frame_number].where),
+        achr2degrees(state.job_list_E[(frame_number + 1) % state.num_working_days].where),
+        elapsed_time / MOVING_TIME
+      );
       break;
     }
   }
