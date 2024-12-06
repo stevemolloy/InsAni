@@ -12,14 +12,15 @@
 #define TEAM_C_COLOUR GREEN
 #define TEAM_D_COLOUR BLACK
 #define TEAM_E_COLOUR PURPLE
-#define RECT_HEIGHT 15
+#define RECT_HEIGHT 12
 #define RECT_WIDTH 90
 #define NUM_OF_ACHROS 20
 #define WORKING_TIME 1.0
 #define MOVING_TIME 0.5
+#define PANELPADDING 10
 
 void plug_frame_update(PlugState state) {
-  // int width = GetScreenWidth();
+  int width = GetScreenWidth();
   int height = GetScreenHeight();
   Vector2 center = {.x = height/2.0, .y = height/2.0};
 
@@ -89,8 +90,13 @@ void plug_frame_update(PlugState state) {
 
   DrawTextEx(state.font, state_as_string(global_state), (Vector2){.x=2, .y=2}, state.fontsize, 0.0, RAYWHITE);
 
-  DrawPoly(center, NUM_OF_ACHROS, outer_radius, 9.0, RAYWHITE);
-  DrawPoly(center, NUM_OF_ACHROS, outer_radius - 5*RECT_HEIGHT - 10, 9.0, BACKGROUND_COLOUR);
+  DrawPoly(center, NUM_OF_ACHROS, outer_radius, 360.0/(20.0*2.0), RAYWHITE);
+  DrawPoly(center, NUM_OF_ACHROS, outer_radius - 5*RECT_HEIGHT - 10, 360.0/(20.0*2.0), BACKGROUND_COLOUR);
+  DrawPolyLinesEx(center, NUM_OF_ACHROS, outer_radius, 360.0/(20.0*2.0), 4, GRAY);
+  DrawPolyLinesEx(center, NUM_OF_ACHROS, outer_radius - 5*RECT_HEIGHT - 10, 360.0/(20.0*2.0), 4, GRAY);
+
+  Rectangle ctrl_panel = {.x=height, .y=10, .width=width-height-20, .height=height-20};
+  DrawRectangleRec(ctrl_panel, GRAY);
 
   DrawRectanglePro(teamA_rect, (Vector2){0}, rectA_rot, TEAM_A_COLOUR);
   DrawRectanglePro(teamB_rect, (Vector2){0}, rectB_rot, TEAM_B_COLOUR);

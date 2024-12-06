@@ -9,9 +9,12 @@
 #include <time.h>
 
 #include "plugin.h"
+#include "insani_lib.h"
+
+#include "sdm_lib.h"
 
 #define WIDTH 1200
-#define HEIGHT 900
+#define HEIGHT 800
 #define FPS 120
 
 PlugState state = {0};
@@ -65,25 +68,58 @@ int main(void) {
   state.fontsize = 44;
   state.font = LoadFontEx("assets/RecMonoCasual-Regular-1.085.ttf", state.fontsize, NULL, 0);
 
-  int locs_A[] = {3, 5, 17, 10, 11, 16, 10, 4, 15, 9, 3, 13, 7, 17, 19, 13, 14, 8, 19, 16, 19, 11, 3, 14, 8, 19, 6, 17, 11, 1, 1};
-  int locs_B[] = {12, 6, 8, 9, 12, 15, 8, 3, 14, 17, 11, 6, 12, 6, 16, 18, 3, 5, 15, 17, 10, 12, 15, 9, 11, 15, 18, 1, 1, 1, 1};
-  int locs_C[] = {4, 15, 16, 18, 13, 6, 9, 12, 6, 8, 19, 15, 8, 10, 4, 15, 17, 4, 14, 8, 18, 4, 6, 17, 3, 13, 7, 9, 1, 1, 1};
-  int locs_D[] = {13, 14, 7, 19, 4, 14, 17, 19, 13, 7, 18, 12, 5, 16, 9, 11, 5, 9, 6, 9, 13, 7, 18, 12, 5, 16, 10, 1, 1, 1, 1};
-  int locs_E[] = {3, 5, 7, 18, 11, 5, 16, 10, 4, 14, 18, 3, 7, 10, 11, 12, 13, 7, 5, 16, 10, 4, 14, 8, 19, 1, 1, 1, 1, 1, 1};
-  int durations_A[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-  int durations_B[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-  int durations_C[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-  int durations_D[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-  int durations_E[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-  assert(sum_intarray(durations_A, ARRAY_SIZE(durations_A)) == sum_intarray(durations_B, ARRAY_SIZE(durations_B)));
-  assert(sum_intarray(durations_A, ARRAY_SIZE(durations_A)) == sum_intarray(durations_C, ARRAY_SIZE(durations_C)));
-  assert(sum_intarray(durations_A, ARRAY_SIZE(durations_A)) == sum_intarray(durations_D, ARRAY_SIZE(durations_D)));
-  assert(sum_intarray(durations_A, ARRAY_SIZE(durations_A)) == sum_intarray(durations_E, ARRAY_SIZE(durations_E)));
-  state.job_list_A = make_job_list(locs_A, durations_A, ARRAY_SIZE(locs_A), &state.num_working_days);
-  state.job_list_B = make_job_list(locs_B, durations_B, ARRAY_SIZE(locs_B), &state.num_working_days);
-  state.job_list_C = make_job_list(locs_C, durations_C, ARRAY_SIZE(locs_C), &state.num_working_days);
-  state.job_list_D = make_job_list(locs_D, durations_D, ARRAY_SIZE(locs_D), &state.num_working_days);
-  state.job_list_E = make_job_list(locs_E, durations_E, ARRAY_SIZE(locs_E), &state.num_working_days);
+  char *teamA_input_string = sdm_read_entire_file("./team_A.csv");
+  char *teamB_input_string = sdm_read_entire_file("./team_B.csv");
+  char *teamC_input_string = sdm_read_entire_file("./team_C.csv");
+  char *teamD_input_string = sdm_read_entire_file("./team_D.csv");
+  char *teamE_input_string = sdm_read_entire_file("./team_E.csv");
+
+  sdm_string_view teamA_sv = sdm_cstr_as_sv(teamA_input_string);
+  sdm_string_view teamB_sv = sdm_cstr_as_sv(teamB_input_string);
+  sdm_string_view teamC_sv = sdm_cstr_as_sv(teamC_input_string);
+  sdm_string_view teamD_sv = sdm_cstr_as_sv(teamD_input_string);
+  sdm_string_view teamE_sv = sdm_cstr_as_sv(teamE_input_string);
+
+  IntArray locs_A_array = {0}, durs_A_array = {0};
+  SDM_ENSURE_ARRAY_MIN_CAP(locs_A_array, 128);
+  SDM_ENSURE_ARRAY_MIN_CAP(durs_A_array, 128);
+  inputfile_parse(&teamA_sv, &locs_A_array, &durs_A_array);
+
+  IntArray locs_B_array = {0}, durs_B_array = {0};
+  SDM_ENSURE_ARRAY_MIN_CAP(locs_B_array, 128);
+  SDM_ENSURE_ARRAY_MIN_CAP(durs_B_array, 128);
+  inputfile_parse(&teamB_sv, &locs_B_array, &durs_B_array);
+
+  IntArray locs_C_array = {0}, durs_C_array = {0};
+  SDM_ENSURE_ARRAY_MIN_CAP(locs_C_array, 128);
+  SDM_ENSURE_ARRAY_MIN_CAP(durs_C_array, 128);
+  inputfile_parse(&teamC_sv, &locs_C_array, &durs_C_array);
+
+  IntArray locs_D_array = {0}, durs_D_array = {0};
+  SDM_ENSURE_ARRAY_MIN_CAP(locs_D_array, 128);
+  SDM_ENSURE_ARRAY_MIN_CAP(durs_D_array, 128);
+  inputfile_parse(&teamD_sv, &locs_D_array, &durs_D_array);
+
+  IntArray locs_E_array = {0}, durs_E_array = {0};
+  SDM_ENSURE_ARRAY_MIN_CAP(locs_E_array, 128);
+  SDM_ENSURE_ARRAY_MIN_CAP(durs_E_array, 128);
+  inputfile_parse(&teamE_sv, &locs_E_array, &durs_E_array);
+
+  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_B_array.data, durs_B_array.length));
+  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_C_array.data, durs_C_array.length));
+  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_C_array.data, durs_D_array.length));
+  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_E_array.data, durs_E_array.length));
+  state.job_list_A = make_job_list(locs_A_array.data, durs_A_array.data, locs_A_array.length, &state.num_working_days);
+  state.job_list_B = make_job_list(locs_B_array.data, durs_B_array.data, locs_B_array.length, &state.num_working_days);
+  state.job_list_C = make_job_list(locs_C_array.data, durs_C_array.data, locs_C_array.length, &state.num_working_days);
+  state.job_list_D = make_job_list(locs_D_array.data, durs_D_array.data, locs_D_array.length, &state.num_working_days);
+  state.job_list_E = make_job_list(locs_E_array.data, durs_E_array.data, locs_E_array.length, &state.num_working_days);
+
+  free(teamA_input_string);
+  free(teamB_input_string);
+  free(teamC_input_string);
+  free(teamD_input_string);
+  free(teamE_input_string);
 
   while (!WindowShouldClose()) {
 #ifndef RELEASE
@@ -100,6 +136,18 @@ int main(void) {
   }
 
   CloseWindow();
+
+  SDM_ARRAY_FREE(locs_A_array);
+  SDM_ARRAY_FREE(locs_B_array);
+  SDM_ARRAY_FREE(locs_C_array);
+  SDM_ARRAY_FREE(locs_D_array);
+  SDM_ARRAY_FREE(locs_E_array);
+
+  SDM_ARRAY_FREE(durs_A_array);
+  SDM_ARRAY_FREE(durs_B_array);
+  SDM_ARRAY_FREE(durs_C_array);
+  SDM_ARRAY_FREE(durs_D_array);
+  SDM_ARRAY_FREE(durs_E_array);
 
   free(state.job_list_A);
   free(state.job_list_B);

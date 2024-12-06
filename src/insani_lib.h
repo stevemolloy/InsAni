@@ -1,8 +1,16 @@
 #ifndef _INSANI_LIB_H
 #define _INSANI_LIB_H
+#include "sdm_lib.h"
 #include "raylib.h"
 #include "plugin.h"
 
+typedef struct {
+  size_t length;
+  size_t capacity;
+  int *data;
+} IntArray;
+
+void inputfile_parse(sdm_string_view *SV, IntArray *locs_array, IntArray *durs_array);
 char *state_as_string(State state);
 float lerpf(float a, float b, float t);
 float achr2degrees(int achromat);

@@ -1,6 +1,23 @@
+#include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "insani_lib.h"
+#define SDM_LIB_IMPLEMENTATION
+#include "sdm_lib.h"
+
+void inputfile_parse(sdm_string_view *SV, IntArray *locs_array, IntArray *durs_array) {
+    while (SV->length) {
+    sdm_sv_trim(SV);
+    SDM_ARRAY_PUSH(*locs_array, sdm_sv_pop_integer_and_trim(SV));
+    if (SV->data[0] != ',') {
+      fprintf(stderr, "Input file incorrect");
+      exit(1);
+    }
+    sdm_sv_pop_one_char_and_trim(SV);
+    SDM_ARRAY_PUSH(*durs_array, sdm_sv_pop_integer_and_trim(SV));
+  }
+}
 
 char *state_as_string(State state) {
   if (state == WORKING) return "WORKING";
