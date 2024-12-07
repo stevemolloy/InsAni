@@ -259,7 +259,7 @@ char *sdm_read_entire_file(const char *file_path) {
   FILE *f = fopen(file_path, "r");
   if (f==NULL) {
     fprintf(stderr, "Could not read %s: %s\n", file_path, strerror(errno));
-    exit(1);
+    return NULL;
   }
 
   fseek(f, 0L, SEEK_END);
