@@ -20,8 +20,8 @@ void inputfile_parse(sdm_string_view *SV, IntArray *locs_array, IntArray *durs_a
 }
 
 char *state_as_string(State state) {
-  if (state == WORKING) return "WORKING";
-  if (state == MOVING)  return "MOVING";
+  if (state == WORKING) return "Working";
+  if (state == MOVING)  return "Moving";
   return NULL;
 }
 

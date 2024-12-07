@@ -18,6 +18,19 @@
 #define WORKING_TIME 1.0
 #define MOVING_TIME 0.5
 #define PANELPADDING 10
+#define BTN_HEIGHT 40
+
+typedef enum {
+  ANI_PAUSED,
+  ANI_RUNNING,
+} Ani_State;
+
+char *button_text(Ani_State state) {
+  switch (state) {
+    case ANI_PAUSED: return "Run";
+    case ANI_RUNNING: return "Pause";
+  }
+}
 
 void plug_frame_update(PlugState state) {
   int width = GetScreenWidth();
@@ -27,25 +40,35 @@ void plug_frame_update(PlugState state) {
   static size_t frame_number = 0;
   static float elapsed_time = 0.0;
   static State global_state = WORKING;
+  static Ani_State ani_state = ANI_PAUSED;
 
-  elapsed_time += GetFrameTime();
-
-  float rectA_rot, rectB_rot, rectC_rot, rectD_rot, rectE_rot;
+  static float rectA_rot = 0, rectB_rot = 0, rectC_rot = 0, rectD_rot = 0, rectE_rot = 0;
+  if (ani_state == ANI_PAUSED) {
+    rectA_rot = achr2degrees(state.job_list_A[frame_number].where);
+    rectB_rot = achr2degrees(state.job_list_B[frame_number].where);
+    rectC_rot = achr2degrees(state.job_list_C[frame_number].where);
+    rectD_rot = achr2degrees(state.job_list_D[frame_number].where);
+    rectE_rot = achr2degrees(state.job_list_E[frame_number].where);
+  }
 
   switch (global_state) {
     case WORKING: {
-      if (elapsed_time > WORKING_TIME) {
-        elapsed_time = 0.0;
-        global_state = MOVING;
+      if (ani_state == ANI_RUNNING) {
+      elapsed_time += GetFrameTime();
+        if (elapsed_time > WORKING_TIME) {
+          elapsed_time = 0.0;
+          global_state = MOVING;
+        }
+        rectA_rot = achr2degrees(state.job_list_A[frame_number].where);
+        rectB_rot = achr2degrees(state.job_list_B[frame_number].where);
+        rectC_rot = achr2degrees(state.job_list_C[frame_number].where);
+        rectD_rot = achr2degrees(state.job_list_D[frame_number].where);
+        rectE_rot = achr2degrees(state.job_list_E[frame_number].where);
       }
-      rectA_rot = achr2degrees(state.job_list_A[frame_number].where);
-      rectB_rot = achr2degrees(state.job_list_B[frame_number].where);
-      rectC_rot = achr2degrees(state.job_list_C[frame_number].where);
-      rectD_rot = achr2degrees(state.job_list_D[frame_number].where);
-      rectE_rot = achr2degrees(state.job_list_E[frame_number].where);
       break;
     }
     case MOVING: {
+      elapsed_time += GetFrameTime();
       if (elapsed_time > MOVING_TIME) {
         elapsed_time = 0.0;
         global_state = WORKING;
@@ -78,6 +101,20 @@ void plug_frame_update(PlugState state) {
   Rectangle teamD_rect = {.x = rectD_loc.x, .y = rectD_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
   Rectangle teamE_rect = {.x = rectE_loc.x, .y = rectE_loc.y, .height = RECT_HEIGHT, .width = RECT_WIDTH};
 
+  Rectangle ctrl_panel = {.x=height, .y=PANELPADDING, .width=width-height-(2*PANELPADDING), .height=height-(2*PANELPADDING)};
+  Rectangle start_stop_btn_rect = {.x=ctrl_panel.x+PANELPADDING, .y=ctrl_panel.y+PANELPADDING, .width=ctrl_panel.width/2-2*PANELPADDING, .height=BTN_HEIGHT};
+  Vector2 text_pos = MeasureTextEx(state.font, button_text(ani_state), state.fontsize, 0);
+  text_pos.x = start_stop_btn_rect.x + start_stop_btn_rect.width/2 - text_pos.x/2;
+  text_pos.y = start_stop_btn_rect.y + start_stop_btn_rect.height/2 - text_pos.y/2;
+
+  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    Vector2 click_loc = GetMousePosition();
+    if (CheckCollisionPointRec(click_loc, start_stop_btn_rect)) {
+      if (ani_state == ANI_RUNNING) ani_state = ANI_PAUSED;
+      else if (ani_state == ANI_PAUSED) ani_state = ANI_RUNNING;
+    }
+  }
+
   BeginDrawing();
 
   ClearBackground(BACKGROUND_COLOUR);
@@ -89,8 +126,10 @@ void plug_frame_update(PlugState state) {
   DrawPolyLinesEx(center, NUM_OF_ACHROS, outer_radius, 360.0/(20.0*2.0), 4, GRAY);
   DrawPolyLinesEx(center, NUM_OF_ACHROS, outer_radius - 5*RECT_HEIGHT - 10, 360.0/(20.0*2.0), 4, GRAY);
 
-  Rectangle ctrl_panel = {.x=height, .y=10, .width=width-height-20, .height=height-20};
   DrawRectangleRec(ctrl_panel, GRAY);
+
+  DrawRectangleRec(start_stop_btn_rect, DARKGRAY);
+  DrawTextEx(state.font, button_text(ani_state), (Vector2){.x=text_pos.x, .y=text_pos.y}, state.fontsize, 0, BLACK);
 
   DrawRectanglePro(teamA_rect, (Vector2){0}, rectA_rot, TEAM_A_COLOUR);
   DrawRectanglePro(teamB_rect, (Vector2){0}, rectB_rot, TEAM_B_COLOUR);

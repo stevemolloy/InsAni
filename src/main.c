@@ -65,8 +65,8 @@ int main(void) {
   InitWindow(WIDTH, HEIGHT, "Raylib");
   SetTargetFPS(FPS);
 
-  state.fontsize = 44;
-  state.font = LoadFontEx("assets/RecMonoCasual-Regular-1.085.ttf", state.fontsize, NULL, 0);
+  state.fontsize = 38;
+  state.font = LoadFontEx("assets/NotoSans-Regular.ttf", state.fontsize, NULL, 0);
 
   char *teamA_input_string = sdm_read_entire_file("./team_A.csv");
   char *teamB_input_string = sdm_read_entire_file("./team_B.csv");
