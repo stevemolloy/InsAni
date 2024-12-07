@@ -15,7 +15,7 @@
 
 #define WIDTH 1200
 #define HEIGHT 800
-#define FPS 120
+#define FPS 60
 
 PlugState state = {0};
 
@@ -65,7 +65,7 @@ int main(void) {
   InitWindow(WIDTH, HEIGHT, "Raylib");
   SetTargetFPS(FPS);
 
-  state.fontsize = 38;
+  state.fontsize = 28;
   state.font = LoadFontEx("assets/NotoSans-Regular.ttf", state.fontsize, NULL, 0);
 
   char *teamA_input_string = sdm_read_entire_file("./team_A.csv");
