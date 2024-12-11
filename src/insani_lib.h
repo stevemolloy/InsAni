@@ -10,7 +10,13 @@ typedef struct {
   int *data;
 } IntArray;
 
-void inputfile_parse(sdm_string_view *SV, IntArray *locs_array, IntArray *durs_array);
+typedef struct {
+  size_t length;
+  size_t capacity;
+  sdm_string_view *data;
+} SVArray;
+
+void inputfile_parse(sdm_string_view *SV, IntArray *locs_array, IntArray *durs_array, SVArray *comments_array);
 char *state_as_string(State state);
 float lerpf(float a, float b, float t);
 float achr2degrees(int achromat);

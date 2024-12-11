@@ -6,8 +6,17 @@
 #define SDM_LIB_IMPLEMENTATION
 #include "sdm_lib.h"
 
-void inputfile_parse(sdm_string_view *SV, IntArray *locs_array, IntArray *durs_array) {
-    while (SV->length) {
+void inputfile_parse(sdm_string_view *SV, IntArray *locs_array, IntArray *durs_array, SVArray *comments_array) {
+  for (size_t i=0; i<SV->length; i++) {
+    if (SV->data[i] == '\n') {
+      SV->data[i] = 0;
+    }
+  }
+
+  while (SV->length) {
+    if (SV->data[0] == '\0') {
+      sdm_sv_pop_one_char_and_trim(SV);
+    }
     sdm_sv_trim(SV);
     SDM_ARRAY_PUSH(*locs_array, sdm_sv_pop_integer_and_trim(SV));
     if (SV->data[0] != ',') {
@@ -16,6 +25,12 @@ void inputfile_parse(sdm_string_view *SV, IntArray *locs_array, IntArray *durs_a
     }
     sdm_sv_pop_one_char_and_trim(SV);
     SDM_ARRAY_PUSH(*durs_array, sdm_sv_pop_integer_and_trim(SV));
+    if (SV->data[0] == ',') {
+      sdm_sv_pop_one_char_and_trim(SV);
+      SDM_ARRAY_PUSH(*comments_array, sdm_sv_pop_by_delim(SV, '\0'));
+    } else {
+      SDM_ARRAY_PUSH(*comments_array, (sdm_string_view){0});
+    }
   }
 }
 

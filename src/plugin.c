@@ -147,5 +147,36 @@ void plug_frame_update(PlugState state) {
   DrawRectanglePro(teamD_rect, (Vector2){0}, rectD_rot, TEAM_D_COLOUR);
   DrawRectanglePro(teamE_rect, (Vector2){0}, rectE_rot, TEAM_E_COLOUR);
 
+  char *teamA_task = state.job_list_A[frame_number].description.data;
+  text_pos = (Vector2){.x=ctrl_panel.x + 5, .y=ctrl_panel.y + 2};
+
+  DrawTextEx(state.smallfont, "Team A task: ", text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += state.smallfontsize;
+  DrawTextEx(state.smallfont, teamA_task, text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += 2 * state.smallfontsize + PANELPADDING;
+
+  char *teamB_task = state.job_list_B[frame_number].description.data;
+  DrawTextEx(state.smallfont, "Team B task: ", text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += state.smallfontsize;
+  DrawTextEx(state.smallfont, teamB_task, text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += 2 * state.smallfontsize + PANELPADDING;
+
+  char *teamC_task = state.job_list_C[frame_number].description.data;
+  DrawTextEx(state.smallfont, "Team C task: ", text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += state.smallfontsize;
+  DrawTextEx(state.smallfont, teamC_task, text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += 2 * state.smallfontsize + PANELPADDING;
+
+  char *teamD_task = state.job_list_D[frame_number].description.data;
+  DrawTextEx(state.smallfont, "Team D task: ", text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += state.smallfontsize;
+  DrawTextEx(state.smallfont, teamD_task, text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += 2 * state.smallfontsize + PANELPADDING;
+
+  char *teamE_task = state.job_list_E[frame_number].description.data;
+  DrawTextEx(state.smallfont, "Team E task: ", text_pos, state.smallfontsize, 0, DARK_COLOUR);
+  text_pos.y += state.smallfontsize;
+  DrawTextEx(state.smallfont, teamE_task, text_pos, state.smallfontsize, 0, DARK_COLOUR);
+
   EndDrawing();
 }
