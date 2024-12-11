@@ -1,31 +1,29 @@
-13, 1
-14, 1
-7, 1
-19, 1
-4, 1
-14, 1
-17, 1
-19, 1
-13, 1
-7, 1
-18, 1
-12, 1
-5, 1
-16, 1
-9, 1
-11, 1
-5, 1
-9, 1
-6, 1
-9, 1
-13, 1
-7, 1
-18, 1
-12, 1
-5, 1
-16, 1
-10, 1
-1, 1
-1, 1
-1, 1
-1, 1
+13, 1, Remove old top magnet halves
+14, 1, Remove old top magnet halves
+07, 1, Remove old top magnet halves
+19, 1, Remove old top magnet halves
+04, 1, Install local supports for vac chambers (U1-U5)
+14, 1, Install local supports for vac chambers (U1-U5)
+17, 1, Install local supports for vac chambers (U1-U5)
+19, 1, Install local supports for vac chambers (U1-U5)
+13, 1, Remove old bottom magnet blocks
+07, 1, Remove old bottom magnet blocks
+18, 1, Remove old bottom magnet blocks
+12, 1, Mount new bottom-blocks (in the lowered position)
+05, 1, Mount new bottom-blocks (in the lowered position)
+16, 1, Mount new bottom-blocks (in the lowered position)
+09, 1, Mount new bottom-blocks (in the lowered position)
+11, 1, Mount new bottom-blocks (in the lowered position)
+05, 1, Raise lower magnet blocks while bending the vac chamber
+09, 1, Raise lower magnet blocks while bending the vac chamber
+06, 1, Preloading lower magnet halves
+09, 1, Preloading lower magnet halves
+13, 1, Close magnet blocks
+07, 1, Close magnet blocks
+18, 1, Close magnet blocks
+12, 1, Measure/correct block shapes
+05, 1, Measure/correct block shapes
+16, 1, Measure/correct block shapes
+10, 1, Measure/correct block shapes
+01, 1, ...
+01, 1, ...
