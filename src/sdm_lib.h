@@ -339,6 +339,10 @@ int sdm_sv_pop_integer(sdm_string_view *SV) {
 }
 
 int sdm_sv_pop_integer_and_trim(sdm_string_view *SV) {
+  while (SV->data[0] == '0') {
+    SV->data += 1;
+    SV->length -= 1;
+  }
   char *new_pos;
   int retval = strtol(SV->data, &new_pos, 0);
   size_t diff = new_pos - SV->data;
