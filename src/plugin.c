@@ -130,6 +130,16 @@ void plug_frame_update(PlugState state) {
   step_text_pos.x = step_btn_rect.x + step_btn_rect.width/2 - step_text_pos.x/2;
   step_text_pos.y = step_btn_rect.y + step_btn_rect.height/2 - step_text_pos.y/2;
 
+  Rectangle reset_btn_rect = {
+    .x=ctrl_panel.x+ctrl_panel.width/2+PANELPADDING, 
+    .y=ctrl_panel.y+ctrl_panel.height-3*PANELPADDING-2*BTN_HEIGHT,
+    .width=ctrl_panel.width/2-2*PANELPADDING, 
+    .height=BTN_HEIGHT
+  };
+  Vector2 reset_text_pos = MeasureTextEx(state.font, "Reset", state.fontsize, 0);
+  reset_text_pos.x = reset_btn_rect.x + reset_btn_rect.width/2 - reset_text_pos.x/2;
+  reset_text_pos.y = reset_btn_rect.y + reset_btn_rect.height/2 - reset_text_pos.y/2;
+
   if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
     Vector2 click_loc = GetMousePosition();
     if (CheckCollisionPointRec(click_loc, pause_btn_rect)) {
@@ -140,8 +150,13 @@ void plug_frame_update(PlugState state) {
       if (ani_state == ANI_PAUSED) {
         elapsed_time = 0.0;
         global_state = MOVING;
-        // frame_number = (frame_number + 1) % state.num_working_days;
       }
+    }
+    if (CheckCollisionPointRec(click_loc, reset_btn_rect)) {
+      frame_number = 0;
+      elapsed_time = 0.0;
+      global_state = WORKING;
+      ani_state = ANI_PAUSED;
     }
   }
 
@@ -163,6 +178,10 @@ void plug_frame_update(PlugState state) {
   DrawRectangleRec(step_btn_rect, BUTTON_COLOUR);
   DrawRectangleRoundedLines(step_btn_rect, 0.35, 32, 2, GRAY);
   DrawTextEx(state.font, "Step", step_text_pos, state.fontsize, 0, BUTTON_TEXT_COLOUR);
+
+  DrawRectangleRec(reset_btn_rect, BUTTON_COLOUR);
+  DrawRectangleRoundedLines(reset_btn_rect, 0.35, 32, 2, GRAY);
+  DrawTextEx(state.font, "Reset", reset_text_pos, state.fontsize, 0, BUTTON_TEXT_COLOUR);
 
   DrawRectanglePro(teamA_rect, (Vector2){0}, rectA_rot, TEAM_A_COLOUR);
   DrawRectanglePro(teamB_rect, (Vector2){0}, rectB_rot, TEAM_B_COLOUR);
