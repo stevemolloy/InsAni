@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "insani_lib.h"
+#include "raylib.h"
 #define SDM_LIB_IMPLEMENTATION
 #include "sdm_lib.h"
 
@@ -41,7 +42,8 @@ char *state_as_string(State state) {
 }
 
 float lerpf(float a, float b, float t) {
-  return a + (b - a) * t;
+  // return a + (b - a) * t;
+  return a + (b - a) * (cosf(t * PI) - 1.0) / -2.0;
 }
 
 float achr2degrees(int achromat) {

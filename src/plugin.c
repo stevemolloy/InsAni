@@ -21,8 +21,8 @@
 #define RECT_HEIGHT 10
 #define RECT_WIDTH 80
 #define NUM_OF_ACHROS 20
-#define WORKING_TIME 1.0
-#define MOVING_TIME 0.25
+#define WORKING_TIME 1.5
+#define MOVING_TIME 0.5
 #define PANELPADDING 10
 #define BTN_HEIGHT 35
 
