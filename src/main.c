@@ -59,14 +59,14 @@ void usage(char *program_name) {
 
 #define ARRAY_SIZE(arr) sizeof((arr)) / sizeof((arr)[0])
 
-int main(int argc, char **argv) {
-  char *exe_name = sdm_shift_args(&argc, &argv);
-
-  if (argc == 0) {
-    fprintf(stderr, "No input files supplied\n");
-    usage(exe_name);
-    return 1;
-  }
+int main(void) {
+  // char *exe_name = sdm_shift_args(&argc, &argv);
+//
+  // if (argc == 0) {
+  //   fprintf(stderr, "No input files supplied\n");
+  //   usage(exe_name);
+  //   return 1;
+  // }
 
 #ifndef RELEASE
   struct stat file_stats = {0};
@@ -82,11 +82,11 @@ int main(int argc, char **argv) {
   state.smallfontsize = 22;
   state.smallfont = LoadFontEx("assets/NotoSans-Regular.ttf", state.smallfontsize, NULL, 0);
 
-  char *teamA_input_string = sdm_read_entire_file("./team_A.csv");
-  char *teamB_input_string = sdm_read_entire_file("./team_B.csv");
-  char *teamC_input_string = sdm_read_entire_file("./team_C.csv");
-  char *teamD_input_string = sdm_read_entire_file("./team_D.csv");
-  char *teamE_input_string = sdm_read_entire_file("./team_E.csv");
+  char *teamA_input_string = sdm_read_entire_file("./team_A_corrected.csv");
+  char *teamB_input_string = sdm_read_entire_file("./team_B_corrected.csv");
+  char *teamC_input_string = sdm_read_entire_file("./team_C_corrected.csv");
+  char *teamD_input_string = sdm_read_entire_file("./team_D_corrected.csv");
+  char *teamE_input_string = sdm_read_entire_file("./team_E_corrected.csv");
 
   sdm_string_view teamA_sv = sdm_cstr_as_sv(teamA_input_string);
   sdm_string_view teamB_sv = sdm_cstr_as_sv(teamB_input_string);
