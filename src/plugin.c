@@ -40,6 +40,8 @@ char *pause_button_text(Ani_State state) {
   }
 }
 
+char day_str[128] = {0};
+
 void plug_frame_update(PlugState state) {
   int width = GetScreenWidth();
   int height = GetScreenHeight();
@@ -219,6 +221,11 @@ void plug_frame_update(PlugState state) {
   DrawTextEx(state.smallfont, "Team E task: ", desc_text_pos, state.smallfontsize, 0, DARK_COLOUR);
   desc_text_pos.y += state.smallfontsize;
   DrawTextEx(state.smallfont, teamE_task, desc_text_pos, state.smallfontsize, 0, DARK_COLOUR);
+
+  memset(day_str, 0, sizeof(day_str));
+  sprintf(day_str, "Day %zu / %zu", frame_number, state.num_working_days);
+  DrawTextEx(state.smallfont, day_str, (Vector2){5, 5}, state.smallfontsize, 0, BUTTON_COLOUR);
+  DrawRectangle(5, 30, 10, (height-35)*(frame_number+1)/state.num_working_days, BUTTON_COLOUR);
 
   EndDrawing();
 }
