@@ -1,6 +1,6 @@
 # Visualising an Accelerator upgrade with Raylib
 
-Just what it says.
+![Alt text](ScenarioA_animation.mp4?raw=true "Optional Title")
 
 ```console
 make run
