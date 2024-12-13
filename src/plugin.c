@@ -101,8 +101,6 @@ void plug_frame_update(PlugState state) {
         } else {
           memset(frac_achr_done, 0, sizeof(frac_achr_done));
         }
-
-        TraceLog(LOG_INFO, "%0.3f ", frac_achr_done[3]);
       }
       if ((ani_state == ANI_RUNNING) || (elapsed_time < MOVING_TIME)) {
         elapsed_time += GetFrameTime();
