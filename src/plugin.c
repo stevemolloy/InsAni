@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <math.h>
 
 #include "raylib.h"
 
@@ -61,6 +62,8 @@ void plug_frame_update(PlugState state) {
     rectE_rot = achr2degrees(state.job_list_E[frame_number].where);
   }
 
+  static float frac_achr_done[20] = {0};
+
   switch (global_state) {
     case WORKING: {
       elapsed_time += GetFrameTime();
@@ -80,6 +83,26 @@ void plug_frame_update(PlugState state) {
         elapsed_time = 0.0;
         global_state = WORKING;
         frame_number = (frame_number + 1) % state.num_working_days;
+        if (frame_number != 0) {
+          size_t where = state.job_list_A[frame_number].where;
+          frac_achr_done[where - 1] += 1.0 / (float)state.achromat_tasks[where - 1];
+
+          where = state.job_list_B[frame_number].where;
+          frac_achr_done[where - 1] += 1.0 / (float)state.achromat_tasks[where - 1];
+
+          where = state.job_list_C[frame_number].where;
+          frac_achr_done[where - 1] += 1.0 / (float)state.achromat_tasks[where - 1];
+
+          where = state.job_list_D[frame_number].where;
+          frac_achr_done[where - 1] += 1.0 / (float)state.achromat_tasks[where - 1];
+
+          where = state.job_list_E[frame_number].where;
+          frac_achr_done[where - 1] += 1.0 / (float)state.achromat_tasks[where - 1];
+        } else {
+          memset(frac_achr_done, 0, sizeof(frac_achr_done));
+        }
+
+        TraceLog(LOG_INFO, "%0.3f ", frac_achr_done[3]);
       }
       if ((ani_state == ANI_RUNNING) || (elapsed_time < MOVING_TIME)) {
         elapsed_time += GetFrameTime();
@@ -159,6 +182,7 @@ void plug_frame_update(PlugState state) {
       elapsed_time = 0.0;
       global_state = WORKING;
       ani_state = ANI_PAUSED;
+      memset(frac_achr_done, 0, sizeof(frac_achr_done));
     }
   }
 
@@ -167,8 +191,31 @@ void plug_frame_update(PlugState state) {
   ClearBackground(BACKGROUND_COLOUR);
 
   DrawPoly(center, NUM_OF_ACHROS, outer_radius, 360.0/(20.0*2.0), LIGHT_COLOUR);
-  DrawPoly(center, NUM_OF_ACHROS, outer_radius - 5*RECT_HEIGHT - 10, 360.0/(20.0*2.0), BACKGROUND_COLOUR);
   DrawPolyLinesEx(center, NUM_OF_ACHROS, outer_radius, 360.0/(20.0*2.0), 4, GRAY);
+
+  for (size_t i=0; i<20; i++) {
+    float angle = (2 * PI) / 20.0;
+    float half_angle = angle / 2.0;
+    float applied_angle = -half_angle - i*angle + PI;
+
+    Vector2 left  = {.x = (outer_radius - 4) * sinf(applied_angle), .y = 1.0* (outer_radius - 4) * cosf(applied_angle)};
+
+    Vector2 right = {.x = (outer_radius - 4) * sinf(applied_angle + angle), .y = 1.0 *(outer_radius - 4) * cosf(applied_angle + angle)};
+    left.x += center.x;
+    left.y += center.y;
+    right.x += center.x;
+    right.y += center.y;
+
+    DrawTriangle(center, left, right,
+              (Color){
+                 32 + 180*frac_achr_done[i],
+                 32 + 180*frac_achr_done[i],
+                 32 + 180*frac_achr_done[i],
+                 255
+              });
+  }
+
+  DrawPoly(center, NUM_OF_ACHROS, outer_radius - 5*RECT_HEIGHT - 10, 360.0/(20.0*2.0), BACKGROUND_COLOUR);
   DrawPolyLinesEx(center, NUM_OF_ACHROS, outer_radius - 5*RECT_HEIGHT - 10, 360.0/(20.0*2.0), 4, GRAY);
 
   DrawRectangleRec(ctrl_panel, CTRLPANEL_COLOUR);
@@ -223,7 +270,7 @@ void plug_frame_update(PlugState state) {
   DrawTextEx(state.smallfont, teamE_task, desc_text_pos, state.smallfontsize, 0, DARK_COLOUR);
 
   memset(day_str, 0, sizeof(day_str));
-  sprintf(day_str, "Day %zu / %zu", frame_number, state.num_working_days);
+  sprintf(day_str, "Day %zu / %zu", frame_number+1, state.num_working_days);
   DrawTextEx(state.smallfont, day_str, (Vector2){5, 5}, state.smallfontsize, 0, BUTTON_COLOUR);
   DrawRectangle(5, 30, 10, (height-35)*(frame_number+1)/state.num_working_days, BUTTON_COLOUR);
 

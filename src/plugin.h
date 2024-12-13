@@ -22,6 +22,7 @@ typedef struct {
   int smallfontsize;
   Font smallfont;
   size_t num_working_days;
+  size_t achromat_tasks[20];
   Working *job_list_A;
   Working *job_list_B;
   Working *job_list_C;

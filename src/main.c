@@ -144,6 +144,14 @@ int main(void) {
   state.job_list_D = make_job_list(locs_D_array.data, durs_D_array.data, comments_D_array.data, locs_D_array.length, &state.num_working_days);
   state.job_list_E = make_job_list(locs_E_array.data, durs_E_array.data, comments_E_array.data, locs_E_array.length, &state.num_working_days);
 
+  for (size_t i=0; i<state.num_working_days; i++) {
+    state.achromat_tasks[state.job_list_A[i].where - 1]++;
+    state.achromat_tasks[state.job_list_B[i].where - 1]++;
+    state.achromat_tasks[state.job_list_C[i].where - 1]++;
+    state.achromat_tasks[state.job_list_D[i].where - 1]++;
+    state.achromat_tasks[state.job_list_E[i].where - 1]++;
+  }
+
   while (!WindowShouldClose()) {
 #ifndef RELEASE
     stat(plug_filename, &file_stats);
