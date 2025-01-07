@@ -11,6 +11,7 @@ $(EXE): src/main.c objs/insani_lib.o
 	$(CC) $(CFLAGS) objs/insani_lib.o src/main.c -o $(EXE) $(CINCLUDES) $(CLIBS)
 
 objs/insani_lib.o: src/insani_lib.c
+	mkdir -p objs
 	$(CC) $(CFLAGS) -o objs/insani_lib.o $(CINCLUDES) -c src/insani_lib.c
 
 objs/libplug.so: src/plugin.c objs/insani_lib.o
