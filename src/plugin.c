@@ -266,7 +266,7 @@ void plug_frame_update(PlugState state) {
   DrawTextEx(state.smallfont, teamE_task, desc_text_pos, state.smallfontsize, 0, DARK_COLOUR);
 
   memset(day_str, 0, sizeof(day_str));
-  sprintf(day_str, "Day %zu / %zu", frame_number+1, state.num_working_days);
+  sprintf(day_str, "Day %0.1f / %0.1f", (frame_number+1)/2.0, state.num_working_days/2.0);
   DrawTextEx(state.smallfont, day_str, (Vector2){5, 5}, state.smallfontsize, 0, BUTTON_COLOUR);
   DrawRectangle(5, 30, 10, (height-35)*(frame_number+1)/state.num_working_days, BUTTON_COLOUR);
 

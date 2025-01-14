@@ -45,10 +45,10 @@ void plug_reload(const char* filename) {
 }
 #endif /* ifndef RELEASE */
 
-int sum_intarray(int *array, size_t n) {
+int sum_intarray(IntArray array) {
   int sum = 0;
-  for (size_t i=0; i<n; i++) {
-    sum += array[i];
+  for (size_t i=0; i<array.length; i++) {
+    sum += array.data[i];
   }
   return sum;
 }
@@ -74,25 +74,17 @@ int main(void) {
   const char* plug_filename = "./objs/libplug.so";
 #endif /* ifndef RELEASE */
 
-  InitWindow(WIDTH, HEIGHT, "Raylib");
-  SetTargetFPS(FPS);
+  const char *teamA_input_filename = "./team_A_fixed.csv";
+  const char *teamB_input_filename = "./team_B_fixed.csv";
+  const char *teamC_input_filename = "./team_C_fixed.csv";
+  const char *teamD_input_filename = "./team_D_fixed.csv";
+  const char *teamE_input_filename = "./team_E_fixed.csv";
 
-  state.fontsize = 28;
-  state.font = LoadFontEx("assets/NotoSans-Regular.ttf", state.fontsize, NULL, 0);
-  state.smallfontsize = 22;
-  state.smallfont = LoadFontEx("assets/NotoSans-Regular.ttf", state.smallfontsize, NULL, 0);
-
-  // char *teamA_input_string = sdm_read_entire_file("./team_A_corrected.csv");
-  // char *teamB_input_string = sdm_read_entire_file("./team_B_corrected.csv");
-  // char *teamC_input_string = sdm_read_entire_file("./team_C_corrected.csv");
-  // char *teamD_input_string = sdm_read_entire_file("./team_D_corrected.csv");
-  // char *teamE_input_string = sdm_read_entire_file("./team_E_corrected.csv");
-
-  char *teamA_input_string = sdm_read_entire_file("./team_A_fixed.csv");
-  char *teamB_input_string = sdm_read_entire_file("./team_B_fixed.csv");
-  char *teamC_input_string = sdm_read_entire_file("./team_C_fixed.csv");
-  char *teamD_input_string = sdm_read_entire_file("./team_D_fixed.csv");
-  char *teamE_input_string = sdm_read_entire_file("./team_E_fixed.csv");
+  char *teamA_input_string = sdm_read_entire_file(teamA_input_filename);
+  char *teamB_input_string = sdm_read_entire_file(teamB_input_filename);
+  char *teamC_input_string = sdm_read_entire_file(teamC_input_filename);
+  char *teamD_input_string = sdm_read_entire_file(teamD_input_filename);
+  char *teamE_input_string = sdm_read_entire_file(teamE_input_filename);
 
   sdm_string_view teamA_sv = sdm_cstr_as_sv(teamA_input_string);
   sdm_string_view teamB_sv = sdm_cstr_as_sv(teamB_input_string);
@@ -101,49 +93,52 @@ int main(void) {
   sdm_string_view teamE_sv = sdm_cstr_as_sv(teamE_input_string);
 
   IntArray locs_A_array = {0}, durs_A_array = {0};
-  SVArray comments_A_array = {0};
-  SDM_ENSURE_ARRAY_MIN_CAP(locs_A_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(durs_A_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(comments_A_array, 128);
-  printf("Parsing A file\n");
-  inputfile_parse(&teamA_sv, &locs_A_array, &durs_A_array, &comments_A_array);
-
   IntArray locs_B_array = {0}, durs_B_array = {0};
-  SVArray comments_B_array = {0};
-  SDM_ENSURE_ARRAY_MIN_CAP(locs_B_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(durs_B_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(comments_B_array, 128);
-  printf("Parsing B file\n");
-  inputfile_parse(&teamB_sv, &locs_B_array, &durs_B_array, &comments_B_array);
-
   IntArray locs_C_array = {0}, durs_C_array = {0};
-  SVArray comments_C_array = {0};
-  SDM_ENSURE_ARRAY_MIN_CAP(locs_C_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(durs_C_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(comments_C_array, 128);
-  printf("Parsing C file\n");
-  inputfile_parse(&teamC_sv, &locs_C_array, &durs_C_array, &comments_C_array);
-
   IntArray locs_D_array = {0}, durs_D_array = {0};
-  SVArray comments_D_array = {0};
-  SDM_ENSURE_ARRAY_MIN_CAP(locs_D_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(durs_D_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(comments_D_array, 128);
-  printf("Parsing D file\n");
-  inputfile_parse(&teamD_sv, &locs_D_array, &durs_D_array, &comments_D_array);
-
   IntArray locs_E_array = {0}, durs_E_array = {0};
+
+  SVArray comments_A_array = {0};
+  SVArray comments_B_array = {0};
+  SVArray comments_C_array = {0};
+  SVArray comments_D_array = {0};
   SVArray comments_E_array = {0};
-  SDM_ENSURE_ARRAY_MIN_CAP(locs_E_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(durs_E_array, 128);
-  SDM_ENSURE_ARRAY_MIN_CAP(comments_E_array, 128);
-  printf("Parsing E file\n");
+
+  inputfile_parse(&teamA_sv, &locs_A_array, &durs_A_array, &comments_A_array);
+  inputfile_parse(&teamB_sv, &locs_B_array, &durs_B_array, &comments_B_array);
+  inputfile_parse(&teamC_sv, &locs_C_array, &durs_C_array, &comments_C_array);
+  inputfile_parse(&teamD_sv, &locs_D_array, &durs_D_array, &comments_D_array);
   inputfile_parse(&teamE_sv, &locs_E_array, &durs_E_array, &comments_E_array);
 
-  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_B_array.data, durs_B_array.length));
-  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_C_array.data, durs_C_array.length));
-  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_D_array.data, durs_D_array.length));
-  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_E_array.data, durs_E_array.length));
+  if (sum_intarray(durs_A_array) != sum_intarray(durs_B_array)) {
+    TraceLog(LOG_ERROR, "ERROR: The duration of tasks in %s differs from that in %s", teamA_input_filename, teamB_input_filename);
+    TraceLog(LOG_ERROR, "ERROR: %s is of length %d, while %s is of length %d", 
+             teamA_input_filename, sum_intarray(durs_A_array), teamB_input_filename, sum_intarray(durs_B_array));
+    TraceLog(LOG_ERROR, "ERROR: Please ensure that the duration of the work in all files match.");
+    return 1;
+  }
+  if (sum_intarray(durs_A_array) != sum_intarray(durs_C_array)) {
+    TraceLog(LOG_ERROR, "ERROR: The duration of tasks in %s differs from that in %s", teamA_input_filename, teamC_input_filename);
+    TraceLog(LOG_ERROR, "ERROR: %s is of length %d, while %s is of length %d", 
+             teamA_input_filename, sum_intarray(durs_A_array), teamC_input_filename, sum_intarray(durs_C_array));
+    TraceLog(LOG_ERROR, "ERROR: Please ensure that the duration of the work in all files match.");
+    return 1;
+  }
+  if (sum_intarray(durs_A_array) != sum_intarray(durs_D_array)) {
+    TraceLog(LOG_ERROR, "ERROR: The duration of tasks in %s differs from that in %s", teamA_input_filename, teamD_input_filename);
+    TraceLog(LOG_ERROR, "ERROR: %s is of length %d, while %s is of length %d", 
+             teamA_input_filename, sum_intarray(durs_A_array), teamD_input_filename, sum_intarray(durs_D_array));
+    TraceLog(LOG_ERROR, "ERROR: Please ensure that the duration of the work in all files match.");
+    return 1;
+  }
+  if (sum_intarray(durs_A_array) != sum_intarray(durs_E_array)) {
+    TraceLog(LOG_ERROR, "ERROR: The duration of tasks in %s differs from that in %s", teamA_input_filename, teamE_input_filename);
+    TraceLog(LOG_ERROR, "ERROR: %s is of length %d, while %s is of length %d", 
+             teamA_input_filename, sum_intarray(durs_A_array), teamE_input_filename, sum_intarray(durs_E_array));
+    TraceLog(LOG_ERROR, "ERROR: Please ensure that the duration of the work in all files match.");
+    return 1;
+  }
+
   state.job_list_A = make_job_list(locs_A_array.data, durs_A_array.data, comments_A_array.data, locs_A_array.length, &state.num_working_days);
   state.job_list_B = make_job_list(locs_B_array.data, durs_B_array.data, comments_B_array.data, locs_B_array.length, &state.num_working_days);
   state.job_list_C = make_job_list(locs_C_array.data, durs_C_array.data, comments_C_array.data, locs_C_array.length, &state.num_working_days);
@@ -157,6 +152,14 @@ int main(void) {
     state.achromat_tasks[state.job_list_D[i].where - 1]++;
     state.achromat_tasks[state.job_list_E[i].where - 1]++;
   }
+
+  InitWindow(WIDTH, HEIGHT, "MAX4U Installation: Logistics Teams");
+  SetTargetFPS(FPS);
+
+  state.fontsize = 28;
+  state.font = LoadFontEx("assets/NotoSans-Regular.ttf", state.fontsize, NULL, 0);
+  state.smallfontsize = 22;
+  state.smallfont = LoadFontEx("assets/NotoSans-Regular.ttf", state.smallfontsize, NULL, 0);
 
   while (!WindowShouldClose()) {
 #ifndef RELEASE
@@ -173,6 +176,12 @@ int main(void) {
   }
 
   CloseWindow();
+
+  SDM_ARRAY_FREE(comments_A_array);
+  SDM_ARRAY_FREE(comments_B_array);
+  SDM_ARRAY_FREE(comments_C_array);
+  SDM_ARRAY_FREE(comments_D_array);
+  SDM_ARRAY_FREE(comments_E_array);
 
   SDM_ARRAY_FREE(locs_A_array);
   SDM_ARRAY_FREE(locs_B_array);
@@ -202,7 +211,8 @@ int main(void) {
 }
 
 Working *make_job_list(int *locations, int *durations, sdm_string_view *descriptions, size_t n, size_t *working_days) {
-  *working_days = sum_intarray(durations, n);
+  IntArray intarray = {.data = durations, .length = n, .capacity = n};
+  *working_days = sum_intarray(intarray);
 
   Working *job_list = malloc(*working_days * sizeof(Working));
   if (job_list == NULL) {
