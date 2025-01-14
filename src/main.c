@@ -136,7 +136,7 @@ int main(void) {
 
   assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_B_array.data, durs_B_array.length));
   assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_C_array.data, durs_C_array.length));
-  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_C_array.data, durs_D_array.length));
+  assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_D_array.data, durs_D_array.length));
   assert(sum_intarray(durs_A_array.data, durs_A_array.length) == sum_intarray(durs_E_array.data, durs_E_array.length));
   state.job_list_A = make_job_list(locs_A_array.data, durs_A_array.data, comments_A_array.data, locs_A_array.length, &state.num_working_days);
   state.job_list_B = make_job_list(locs_B_array.data, durs_B_array.data, comments_B_array.data, locs_B_array.length, &state.num_working_days);
