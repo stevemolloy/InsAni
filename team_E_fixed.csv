@@ -1,0 +1,30 @@
+16, 2,	Achro 16: Remove old top magnet halves
+17, 2,	Achro 17: Remove old top magnet halves
+18, 2,	Achro 18: Remove old top magnet halves
+19, 2,	Achro 19: Remove old top magnet halves
+16, 2,	Achro 16: Install local supports for vac chambers (U1-U5)
+17, 2,	Achro 17: Install local supports for vac chambers (U1-U5)
+18, 2,	Achro 18: Install local supports for vac chambers (U1-U5)
+19, 2,	Achro 19: Install local supports for vac chambers (U1-U5)
+16, 4,	Achro 16: Remove old bottom magnet blocks
+17, 4,	Achro 17: Remove old bottom magnet blocks
+18, 4,	Achro 18: Remove old bottom magnet blocks
+19, 4,	Achro 19: Remove old bottom magnet blocks
+16, 2,	Achro 16: Mount new bottom-blocks (in the lowered position)
+17, 2,	Achro 17: Mount new bottom-blocks (in the lowered position)
+16, 1,  Achro 16: WAITING
+16, 4,	Achro 16: Raise lower magnet blocks while bending the vac chamber
+17, 4,	Achro 17: Raise lower magnet blocks while bending the vac chamber
+18, 2,	Achro 18: Mount new bottom-blocks (in the lowered position)
+19, 2,	Achro 19: Mount new bottom-blocks (in the lowered position)
+16, 1,	Achro 16: Preloading lower magnet halves
+18, 4,	Achro 18: Raise lower magnet blocks while bending the vac chamber
+19, 4,	Achro 19: Raise lower magnet blocks while bending the vac chamber
+17, 1,	Achro 17: Preloading lower magnet halves
+18, 1,	Achro 18: Preloading lower magnet halves
+19, 1,	Achro 19: Preloading lower magnet halves
+16, 4,	Achro 16: Close magnet blocks (possibly requiring another alignment step)
+17, 4,	Achro 17: Close magnet blocks (possibly requiring another alignment step)
+18, 4,	Achro 18: Close magnet blocks (possibly requiring another alignment step)
+17, 2,	Achro 17: Measure/correct block shapes
+18, 2,	Achro 18: Measure/correct block shapes

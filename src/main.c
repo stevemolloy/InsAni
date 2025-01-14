@@ -82,11 +82,17 @@ int main(void) {
   state.smallfontsize = 22;
   state.smallfont = LoadFontEx("assets/NotoSans-Regular.ttf", state.smallfontsize, NULL, 0);
 
-  char *teamA_input_string = sdm_read_entire_file("./team_A_corrected.csv");
-  char *teamB_input_string = sdm_read_entire_file("./team_B_corrected.csv");
-  char *teamC_input_string = sdm_read_entire_file("./team_C_corrected.csv");
-  char *teamD_input_string = sdm_read_entire_file("./team_D_corrected.csv");
-  char *teamE_input_string = sdm_read_entire_file("./team_E_corrected.csv");
+  // char *teamA_input_string = sdm_read_entire_file("./team_A_corrected.csv");
+  // char *teamB_input_string = sdm_read_entire_file("./team_B_corrected.csv");
+  // char *teamC_input_string = sdm_read_entire_file("./team_C_corrected.csv");
+  // char *teamD_input_string = sdm_read_entire_file("./team_D_corrected.csv");
+  // char *teamE_input_string = sdm_read_entire_file("./team_E_corrected.csv");
+
+  char *teamA_input_string = sdm_read_entire_file("./team_A_fixed.csv");
+  char *teamB_input_string = sdm_read_entire_file("./team_B_fixed.csv");
+  char *teamC_input_string = sdm_read_entire_file("./team_C_fixed.csv");
+  char *teamD_input_string = sdm_read_entire_file("./team_D_fixed.csv");
+  char *teamE_input_string = sdm_read_entire_file("./team_E_fixed.csv");
 
   sdm_string_view teamA_sv = sdm_cstr_as_sv(teamA_input_string);
   sdm_string_view teamB_sv = sdm_cstr_as_sv(teamB_input_string);
