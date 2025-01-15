@@ -2,3 +2,4 @@ objs
 main
 .cache/clangd/index
 compile_commands.json
+*.mp4
