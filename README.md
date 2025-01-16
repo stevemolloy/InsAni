@@ -1,6 +1,6 @@
 # Visualising an Accelerator upgrade with Raylib
 
-https://github.com/user-attachments/assets/ab4cc387-25a4-4cac-82ce-33c073a51493
+https://github.com/user-attachments/assets/a99d1d44-474e-49ed-a78e-492a7eb8bf5c
 
 # Quick start
 
